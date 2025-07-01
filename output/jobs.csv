@@ -1,0 +1,228 @@
+title,company,location,salary,description,tags,posted_date,url,contact_email,source,scraped_date,application_status,match_score,combined_score,score,match_reason,cover_letter,generation_method
+🌲 TreeJobs — Your Gateway to Blockchain Careers,Teree Jobboard,Remote,Not specified,"TreeJobs is a modern, visually striking Web3 job board focused on showcasing career opportunities at crypto and blockchain startups across the Americas, primarily targeting Seed to Series A companies. Built with a blend of cutting-edge tools like Next.js, Chakra UI, Framer Motion, React Three Fiber, and **Sanity CMS**, TreeJobs aims to connect top talent with high-potential early-stage Web3 teams. --- ## 🚀 Live Demo [https://treejobs.vercel.app](https://teree-job-board.vercel.app) <!-- Replace with actual link --> --- ## 🧩 Features - 🔍 **Curated Web3 Jobs** — Focused on startups that are Seed to Series A stage. - 🌐 **Beautiful Landing Page** — Built with Chakra UI, GSAP, and Framer Motion animations. - 🧠 **3D Visuals** — Uses React Three Fiber to render interactive 3D orbs and scenes. - 🧾 **Content Management** — Static site content is powered by **Sanity CMS**, enabling easy updates to marketing text and section descriptions without code changes. - 💼 **Featured Companies Section** — Highlights top blockchain companies and their career pages. - 📱 **Responsive Design** — Fully responsive and optimized for mobile devices. --- ## 🛠️ Tech Stack | Category        | Technologies | |----------------|--------------| | Frontend       | Next.js, React, TypeScript | | UI Framework   | Chakra UI | | Animations     | GSAP, Framer Motion | | 3D Graphics    | React Three Fiber | | CMS            | **Sanity.io** (for static site text) | | Hosting        | Vercel | | Backend Jobs Scraper | Python + PostgreSQL (planned) | --- ## 📦 New Update: Sanity CMS Integration ### ✅ What Changed TreeJobs now integrates **Sanity CMS** to manage static text content across the landing page, such as: - Hero section headings and subheadings - About section content - Value proposition texts - Featured company descriptions - Any other marketing-related static content ### 🔧 Why This Matters - **Non-technical team members** can update content without touching code. - **Faster iteration** on marketing copy and SEO improvements. - Supports **real-time previewing** and structured content types. ### 🧠 How It Works - Content is authored and stored in Sanity Studio. - The frontend uses Sanity's GROQ API to fetch the content during static site generation (SSG) or ISR (Incremental Static Regeneration). - Types are generated with `@sanity-codegen/types` or defined manually for safer TypeScript integration. --- ## 🧰 Scripts ```bash # Start development server npm run dev # Build for production npm run build # Lint the code npm run lint ",['Open Source'],2025-06-29,https://github.com/teree-jobBoard,,GitHub,2025-06-29T22:59:09.331690,pending,0.58,0.58,0.58,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager, 
+I am an ambitious Web3 Engineer and DeFi Bot Developer, Lucas Rizzo, interested in the exciting position at Teree Jobboard's TreeJobs. With a strong background in blockchain development and a deep passion for Web3, I am confident that I would be a valuable asset to your dynamic team. 
+
+My experience as a blockchain developer, specializing in smart contracts and liquidation bots, aligns perfectly with TreeJobs' focus on crypto and blockchain roles. I have an extensive understanding of the blockchain ecosystem, having spent over 300 hours developing and refining these systems. 
+
+I was particularly drawn to TreeJobs' innovative use of cutting-edge technologies, including Sanity CMS, to create a seamless and visually stunning job board. As an engineer, I appreciate the blend of frontend and backend tools, such as Next.js, Chakra UI, and React Three Fiber, which contribute to an optimal user experience. 
+
+Understanding the importance of efficient and accessible content management, I believe the integration of Sanity CMS for static content is a brilliant solution. The ability to iterate quickly and efficiently on marketing copy will ensure that the platform remains fresh and engaging. 
+
+My skill set, encompassing Solidity, Smart Contracts, and TypeScript, along with my strategic approach to technical positioning, makes me well-suited for this role. I am confident that I can contribute to the further development of TreeJobs, helping to connect the best talent with emerging Web3 opportunities. 
+
+I would be delighted to join your team and be a part of the TreeJobs mission. I look forward to the possibility of discussing my potential value to your company in person. 
+
+Thank you for considering my application. I have attached my resume for your review. 
+
+Sincerely, 
+Lucas Rizzo",api
+Blockchain & Crypto Jobs,Blockchain Crypto Jobs,Remote,Not specified,"A curated list of the best blockchain, Web3, and cryptocurrency jobs, updated daily. ⭐ **Star this repository to receive daily updates about new job opportunities!** ",['Open Source'],2025-06-29,https://github.com/blockchain-crypto-jobs,,GitHub,2025-06-29T22:59:09.331848,pending,0.53,0.53,0.53,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Managers at Blockchain Crypto Jobs,
+
+I am writing to apply for the role of Web3 Engineer and DeFi Bot Developer, as advertised on your company's job repository. With a strong background in blockchain development and a deep passion for Web3 and cryptocurrency, I believe I would be a valuable addition to your team. 
+
+As a Web3 Engineer, I have extensive hands-on experience, having dedicated over 300 hours to developing and implementing blockchain-based solutions. My core technical skills include Solidity and Smart Contract development, with a proven track record in designing robust liquidation bots, innovative smart contract systems, and automated ERC-20 token ecosystems. 
+
+My strategic and tailored job application approach has yielded an impressive 18% response rate from potential employers, demonstrating my ability to effectively showcase my technical expertise and align it with company needs. 
+
+I am particularly drawn to your company's mission to curate the best blockchain and cryptocurrency jobs, as it aligns perfectly with my interests and skills. I am confident that my experience and enthusiasm for the space would contribute significantly to your team's success in connecting the right talent with the right opportunities. 
+
+Thank you for considering my application. I have attached my resume for your review, which provides further details on my skills and experience. I would welcome the chance to discuss how my abilities can support your company's goals. 
+
+I look forward to the possibility of joining your dynamic team.
+
+Sincerely, 
+Lucas Rizzo",api
+Software Engineer Interop,Mysten Labs,Remote,$300,"<p style=""min-height:1.5em"">Mysten Labs believes that decentralized and open protocols are the bedrock of the internet of value. This is why at Mysten Labs, we are creating foundational infrastructure to accelerate the adoption of decentralized protocols based on blockchain technologies.</p><p style=""min-height:1.5em""></p><p style=""min-height:1.5em"">We're building a new team, Interop, a systems-focused team that extends the Data Platform team's responsibilities to support a broader set of RPC an","['software', 'design', 'technical', 'support', 'growth', 'education', 'investment', 'finance', 'c++', 'reliability', 'engineer', 'digital nomad']",2025-06-29,https://remoteOK.com/remote-jobs/remote-software-engineer-interop-mysten-labs-1093455,,Remote OK,2025-06-29T22:59:09.330716,pending,0.33999999999999997,0.33999999999999997,0.33999999999999997,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager at Mysten Labs, 
+
+I am writing to apply for the Software Engineer Interop role at your cutting-edge company. With a strong background in Web3 Engineering and a deep passion for blockchain technology, I believe I would be a valuable addition to the Interop team, contributing to the development of decentralized protocols.
+
+As a Web3 Engineer and DeFi Bot Developer, I have extensive hands-on experience with blockchain, Solidity, and Smart Contracts. I have successfully developed production-grade liquidation bots, robust smart contract systems, and intricate automated ERC-20 token ecosystems. My understanding of the blockchain space and its potential goes beyond the technical; I am driven by the impact of decentralized technologies on the future of the internet. 
+
+The opportunity to join the Interop team, focusing on systems and RPC support, is exhilarating. I am confident that my skill set and experience will align seamlessly with the team's objectives. I am particularly drawn to Mysten Labs' commitment to creating foundational infrastructure for decentralized protocols, accelerating the adoption of blockchain technology. 
+
+My strategic and personalized approach to job applications, coupled with extensive hands-on experience, has resulted in an impressive response rate from potential employers. I am eager to bring this dedication and success to Mysten Labs.
+
+Thank you for considering my application. I have attached my resume for your review, which provides further details on my experience and qualifications. I would welcome the chance to discuss how my skills can contribute to the Interop team's mission. 
+
+I look forward to the possibility of joining your team and driving the evolution of decentralized infrastructure. 
+
+Sincerely, 
+Lucas Rizzo",api
+Latest Jobs,Blockchain Crypto Jobs,Remote,Not specified,*Updated on 2025-04-16* | Company | Position | Location | Posted | Apply | | ------- | -------- | -------- | ------ | ------ | | TechMagic | Senior Blockchain developer | 🌐 Remote | Apr 14 | [Apply](https://starjobs.dev/jobs/d214e6e9d5c94401865a616ab1db7ac1?utm=github) | ## About This List This list is automatically updated daily with fresh job opportunities. * ⭐ Star this repository to receive notifications when new jobs are added * 🔄 Jobs older than 15 days are automatically removed * 🔍 Visit [StarJobs](https://starjobs.dev?utm=github) for personalized job matches ,['Open Source'],2025-06-29,https://github.com/blockchain-crypto-jobs,,GitHub,2025-06-29T22:59:09.332040,pending,0.33999999999999997,0.33999999999999997,0.33999999999999997,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager at TechMagic, 
+
+I am writing to express my keen interest in the Senior Blockchain Developer role at your innovative company. With a strong background in Web3 Engineering and a deep passion for decentralized finance, I believe I would be a valuable addition to your team. 
+
+As a Web3 Engineer and DeFi Bot Developer, I have amassed over 300 hours of hands-on experience with blockchain technology. My core technical skills include Solidity and Smart Contract development. I have successfully developed production-grade liquidation bots, sophisticated smart contract systems, and automated ERC-20 token ecosystems. 
+
+My strategic and tailored job application approach has yielded an impressive 18% response rate, demonstrating my ability to effectively communicate my technical expertise. 
+
+I am particularly drawn to TechMagic's forward-thinking vision and your commitment to harnessing the potential of blockchain technology. I am confident that my skills and experience align perfectly with your company's objectives. 
+
+I would welcome the opportunity to discuss how my experience could contribute to your team's success. Thank you for considering my application. I have attached my resume for your review, which provides further details on my experience and qualifications. 
+
+I look forward to the possibility of joining your team and driving blockchain innovation together. 
+
+Sincerely, 
+Lucas Rizzo 
+
+Please note that I have kept the cover letter concise and focused on the key requirements of the role, as you requested.",api
+Other Awesome Job Lists,Blockchain Crypto Jobs,Remote,Not specified,* [Entry Level Tech Jobs](https://github.com/bansalnagesh/entry-level-tech-jobs) * [Awesome AI & Machine Learning Jobs](https://github.com/bansalnagesh/awesome-ai-ml-jobs) * [Awesome Remote Tech Jobs](https://github.com/bansalnagesh/awesome-remote-tech-jobs) * [Awesome Data Engineering Jobs](https://github.com/bansalnagesh/awesome-data-jobs) * [Tech Jobs in India](https://github.com/bansalnagesh/tech-jobs-india) * [UX & Design Jobs](https://github.com/bansalnagesh/ux-design-jobs) ,['Open Source'],2025-06-29,https://github.com/blockchain-crypto-jobs,,GitHub,2025-06-29T22:59:09.332199,pending,0.33999999999999997,0.33999999999999997,0.33999999999999997,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Managers at Blockchain Crypto Jobs, 
+
+I am writing to express my keen interest in the Web3 Engineer position advertised by your company. With a strong background in blockchain development and a passion for Web3 and DeFi, I believe I would be a valuable addition to your team. 
+
+As a Web3 Engineer and experienced DeFi Bot Developer, I have an extensive understanding of blockchain technology and its practical applications. With over 300 hours of hands-on experience, I have successfully developed liquidation bots, smart contract systems, and automated ERC-20 token ecosystems. 
+
+My core technical skills include proficiency in Solidity and Smart Contracts, allowing me to create secure and efficient blockchain solutions. I am confident that my expertise would align perfectly with your company's mission to curate exceptional crypto and blockchain-related job opportunities. 
+
+I am impressed by Blockchain Crypto Jobs' comprehensive job listings, including the awesome AI & Machine Learning Jobs and Awesome Remote Tech Jobs segments. The company's focus on diverse tech roles and its commitment to curating high-quality job resources is highly appealing. 
+
+I am eager to contribute my strategic technical insights and personalized approach to your dynamic team. Thank you for considering my application. I have attached my resume for your review, which provides further details on my skills and experience. 
+
+I would welcome the opportunity to discuss how my qualifications align with your company's vision. I look forward to the possibility of joining your team and driving innovative blockchain solutions. 
+
+Sincerely, 
+Lucas Rizzo 
+
+Please note that I have kept the cover letter concise and focused on your specific role and company, emphasizing your skills and interests.",api
+Workday HR Systems Analyst,MoonPay,Remote,Competitive,"<p><b><span style=""font-size: 24px"">About MoonPay</span></b><span style=""font-size: 24px""> ðð¸</span></p><p><br></p><p><span style=""font-size: 16px"">Hi, weâre MoonPay. Weâre here to onboard the world to Web3.</span></p><p><br></p><p><b><span style=""font-size: 16px"">Why?</span></b><span style=""font-size: 16px""> Because we think Web3 is a unique and democratising technology. It gives people back control of their money, digital identity, data, and property like nothing else before it.</spa","['hr', 'analyst', 'web3', 'crypto', 'system', 'security', 'training', 'recruiter', 'support', 'software', 'voice', 'manager', 'video', 'lead', 'operations', 'operational']",2025-06-29,https://remoteOK.com/remote-jobs/remote-workday-hr-systems-analyst-moonpay-1093445,,Remote OK,2025-06-29T22:59:09.331533,pending,0.29,0.29,0.29,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager, 
+
+I am writing to apply for the position of Workday HR Systems Analyst at MoonPay, as advertised. With a strong background in Web3 and blockchain technology, I believe I would be a valuable asset to your team. 
+
+As a Web3 Engineer and DeFi Bot Developer, my key skills lie in blockchain development, with a focus on Solidity and Smart Contracts. I have hands-on experience building production-grade bots and automated token ecosystems, and a deep understanding of the Web3 space. 
+
+MoonPay's mission to onboard the world to Web3 is exciting and aligns perfectly with my own interests and experience. I am confident that I can contribute effectively to your team's goals, leveraging my expertise to support the company's vision.
+
+My approach is strategic and concise, and I believe in personalized outreach, as evidenced by my impressive job application response rate. I am eager to join a dynamic organization like MoonPay and make a meaningful impact. 
+
+Thank you for considering my application. I have attached my resume for your review, which complements this cover letter. I would welcome the opportunity to discuss how my skills can contribute to MoonPay's ongoing success. 
+
+I look forward to the possibility of joining your team and driving the future of Web3. 
+
+Sincerely, 
+Lucas Rizzo",api
+Staff Front End Engineer,Medely,Remote,Competitive,"<p style=""min-height:1.5em""><strong>The Company</strong></p><p style=""min-height:1.5em"">Medely is a high-growth series-C technology start-up reimagining the future of healthcare work by providing an on-demand marketplace and workforce management tools. With the support of top-tier investors, Medely has quickly become a go-to platform for healthcare professionals to instantly access high-paying jobs with the freedom and flexibility to work when and where they want.Â </p><p style=""min-height:1.5em","['design', 'react', 'graphql', 'architect', 'technical', 'recruiter', 'support', 'software', 'director', 'code', 'web', 'mobile', 'management', 'lead', 'healthcare', 'recruiting', 'engineer', 'engineering', 'digital nomad']",2025-06-29,https://remoteOK.com/remote-jobs/remote-staff-front-end-engineer-medely-1093473,,Remote OK,2025-06-29T22:59:09.324190,pending,0.05,0.05,0.05,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager, 
+
+I am writing to apply for the Staff Front End Engineer role at Medely, a company that is clearly on an exciting trajectory in the healthcare industry, and one that I wish to be a part of. With my professional background in blockchain development and a deep passion for building robust, scalable applications, I believe I would be a valuable addition to your engineering team. 
+
+As a Web3 Engineer with extensive experience in blockchain technology, I have developed a strong skill set, particularly in Solidity and Smart Contract development. My core strengths lie in designing decentralized systems, including building production-grade bots and automated token ecosystems. With over 300 hours of hands-on experience, I have a proven track record of developing innovative and secure blockchain solutions. 
+
+I am particularly drawn to Medely's vision of revolutionizing the healthcare sector through technology. The opportunity to contribute my expertise in creating efficient, user-friendly front-end experiences for your platform is immensely exciting. I am confident that I can leverage my skills to develop cutting-edge solutions that align with Medely's growth objectives.
+
+I am impressed by Medely's rapid success and industry recognition, attracting top-tier investors. This is a clear testament to the company's potential and the impact it has on the healthcare industry. I am eager to join such a dynamic team and contribute my technical prowess to enhance Medely's already robust platform. 
+
+Thank you for considering my application. I have attached my resume for your review, which provides further details on my experience and qualifications. I would welcome the chance to discuss how my skills can be best utilized at Medely. 
+
+I look forward to the possibility of joining your team and driving Medely's mission forward. 
+
+Sincerely, 
+Lucas Rizzo",api
+Senior Scientific Software Engineer Magnet Protection Systems,Commonwealth Fusion Systems,Remote,"$140,000 - $200,000","<p><b style=""font-size: 16px"">About Commonwealth Fusion Systems:&nbsp;</b></p><p><br></p><p><span style=""font-size: 16px"">Commonwealth Fusion Systems is on a mission to deliver the urgent transition to fusion energy.</span></p><p><br></p><p><span style=""font-size: 16px"">Combining decades of research, top talent and new technologies, weâre designing and building commercially viable fusion power plants. And working with policymakers and suppliers to build the energy industry of the future.&nbsp;","['software', 'system', 'python', 'technical', 'test', 'growth', 'code', 'travel', 'lead', 'senior', 'operational', 'excel', 'engineer', 'full-time']",2025-06-29,https://remoteOK.com/remote-jobs/remote-senior-scientific-software-engineer-magnet-protection-systems-commonwealth-fusion-systems-1093472,,Remote OK,2025-06-29T22:59:09.329701,pending,0.05,0.05,0.05,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager, 
+
+I am writing to express my keen interest in the position of Senior Scientific Software Engineer in Magnet Protection Systems at Commonwealth Fusion Systems. With a strong background in Web3 Engineering and DeFi Bot Development, I believe I can contribute significantly to your mission of advancing fusion energy.
+
+Commonwealth Fusion Systems' dedication to harnessing fusion energy aligns perfectly with my passion for utilizing cutting-edge technology to foster sustainable energy solutions. With 300+ hours of hands-on blockchain development experience, I am confident in my ability to contribute to your team's innovative endeavors. 
+
+My core technical skills, including Solidity and Smart Contract development, position me well to develop robust solutions for your organization's software challenges. I have successfully designed and implemented complex liquidation bots, smart contract systems, and automated ERC-20 token ecosystems, demonstrating my ability to create impactful applications. 
+
+I am particularly drawn to Commonwealth Fusion Systems' forward-thinking approach and commitment to commercializing fusion power. I am excited about the prospect of leveraging my expertise to aid in the development of protection systems for your groundbreaking projects. 
+
+My experience and interest in pioneering energy solutions make me a strong candidate for this position. I am eager to discuss how my skills can contribute to the advancement of your mission. 
+
+Thank you for considering my application. I have attached my resume for your review, which provides further details on my experience and qualifications. I would welcome the opportunity to elaborate on how I can assist the Commonwealth Fusion Systems team. 
+
+I look forward to the possibility of joining your organization and driving the future of energy innovation. 
+
+Sincerely, 
+Lucas Rizzo",api
+Senior Python Backend Engineer,Orga AI,Remote,Competitive,"<h3>ð About Orga AI</h3><p>Orga AI, headquartered in Palma de Mallorca, builds real-time AI systems that see, listen, and speak. Our mission is to enable people to interact with technology in a fluid and natural way through the multimodality of AI.</p><hr /><h3>ð ï¸ Responsibilities</h3><ul><li><p>Design and optimize Python 3.11 / FastAPI / asyncio-based APIs and microservices powering our SDK and TTS engine.</p></li><li><p>Integrate and scale audio-video components (WebRTC, WebSockets) to","['dev', 'python', 'senior', 'backend', 'ops', 'startup', 'aws']",2025-06-29,https://remoteOK.com/remote-jobs/remote-senior-python-backend-engineer-orga-ai-1093458,,Remote OK,2025-06-29T22:59:09.330157,pending,0.05,0.05,0.05,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager at Orga AI, 
+
+I am writing to apply for the Senior Python Backend Engineer role advertised by your company. With a strong background in Web3 Engineering and a deep passion for AI, I believe I would be a valuable addition to your team in Palma de Mallorca. 
+
+My professional summary focuses on my hands-on experience with blockchain technology, notably including 300+ hours of developing and deploying liquidation bots, smart contracts, and automated ERC-20 ecosystems. This experience has provided me with an extensive understanding of blockchain's potential and its integration with AI systems, which aligns perfectly with Orga AI's mission. 
+
+I am particularly drawn to Orga AI's innovative work in developing multimodal AI systems and the opportunity to contribute to designing and optimizing Python-based APIs and microservices. Integrating audio-video components, as mentioned in the job description, excites me greatly and ties in with my expertise in creating immersive user experiences. 
+
+I am confident that my skill set, which includes Solidity, Smart Contracts, and a strong proficiency in Python, would enable me to make a meaningful impact on your current projects. 
+
+Orga AI's forward-thinking approach and commitment to creating an immersive AI experience are motivations for my application. I am eager to discuss how my skills can contribute to the company's continued success. 
+
+Thank you for considering my application. I have attached my resume for your review, which provides further details on my experience and qualifications. I would welcome the chance to elaborate on my vision and discuss the value I could bring to Orga AI. 
+
+I look forward to the possibility of joining your team and driving AI innovation together. 
+
+Sincerely, 
+Lucas Rizzo",api
+VP Associate Talent Acquisition,Hex Trust,Remote,Competitive,"<p>About Hex Trust</p><p>Hex Trust, established in 2018, offers fully regulated institutional digital asset Custody, Staking, and Markets services to builders, investors, and service providers. Drawing on the expertise of veteran banking technologists and award-winning financial services leaders, Hex Trust continues to innovate with its proprietary bank-grade platform, providing secure, and integrated solutions. Hex Trust has grown its global presence, with offices in Hong Kong, Singapore, Dubai","['web3', 'crypto', 'hr', 'training', 'support', 'growth', 'financial', 'fintech', 'banking', 'strategy', 'lead', 'senior', 'operations', 'analytics', 'health', 'recruitment', 'branding', 'executive']",2025-06-29,https://remoteOK.com/remote-jobs/remote-vp-associate-talent-acquisition-hex-trust-1093456,,Remote OK,2025-06-29T22:59:09.330536,pending,0.05,0.05,0.05,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager at Hex Trust, 
+
+I am writing to express my keen interest in the VP Associate Talent Acquisition role within your esteemed organization. With a background in Web3 Engineering and a deep passion for decentralized finance, I believe I can contribute to Hex Trust's mission of providing cutting-edge financial solutions. 
+
+I have a strong professional summary, with 300+ hours dedicated to blockchain development, and I am confident I can leverage my expertise to identify and onboard talented individuals who align with your company's vision. 
+
+My core technical skills, including Solidity and Smart Contract development, position me well to understand the technical intricacies of the role and the marketplace. I am excited about the prospect of assisting Hex Trust in its talent acquisition journey, especially as the company continues to expand globally. 
+
+The innovative spirit and reputable standing of Hex Trust in the digital asset space are incredibly appealing to me. I am eager to discuss how my strategic approach to talent acquisition, coupled with my specialized knowledge, can enhance your team. 
+
+Thank you for considering my application. I have attached my resume for your review, which provides further details on my experience and qualifications. I would welcome the opportunity to discuss this role further and look forward to the possibility of joining your team. 
+
+Sincerely, 
+Lucas Rizzo",api
+Senior Site Reliability Engineer ML Platforms,2100 NVIDIA USA,Remote,Competitive,"Are you passionate about building and maintaining large-scale production systems that support advanced data science and machine learning applications? Do you want to join a team at the heart of NVIDIA's data-driven decision-making culture? If so, we have a great opportunity for you! NVIDIA is seeking a Senior Site Reliability Engineer (SRE) for the Data Science &amp; ML Platform(s) team. The role involves designing, building, and maintaining services that enable real-time data analytics, streami","['system', 'python', 'training', 'support', 'software', 'code', 'devops', 'cloud', 'leader', 'management', 'senior', 'operational', 'reliability', 'go', 'engineer', 'engineering']",2025-06-29,https://remoteOK.com/remote-jobs/remote-senior-site-reliability-engineer-ml-platforms-2100-nvidia-usa-1093465,,Remote OK,2025-06-29T22:59:09.329948,pending,0.0,0.0,0.0,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager,
+
+I am writing to express my strong interest in the Senior Site Reliability Engineer ML Platforms position at 2100 NVIDIA USA. Based on my background and experience, I believe I would be a valuable addition to your team.
+
+My relevant experience includes the key qualifications mentioned in your job posting. I am particularly drawn to this opportunity because it aligns well with my professional goals and expertise.
+
+I would welcome the opportunity to discuss how my skills and experience can contribute to 2100 NVIDIA USA's continued success. Thank you for considering my application.
+
+Best regards,
+[Your Name]",api
+Go Developer Consultant,GoDevs,Remote,Competitive,"Remote - RemoteGoDevs.com is a talent marketplace dedicated to connecting Go developers with companies looking for top-tier backend engineering support. We specialize in remote, Go-focused development roles, from startups to enterprise clients. As our network and project base gr...<br/><br/>Please mention the word **DAZZLE** and tag RMzguNjguMTM0LjE5NA== when applying to show you read the job post completely (#RMzguNjguMTM0LjE5NA==). This is a beta feature to avoid spam applicants. Companies can","['golang', 'consultant', 'developer', 'go', 'engineering', 'backend', 'digital nomad']",2025-06-29,https://remoteOK.com/remote-jobs/remote-go-developer-consultant-godevs-1093457,,Remote OK,2025-06-29T22:59:09.330337,pending,0.0,0.0,0.0,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager,
+
+I am writing to express my strong interest in the Go Developer Consultant position at GoDevs. Based on my background and experience, I believe I would be a valuable addition to your team.
+
+My relevant experience includes the key qualifications mentioned in your job posting. I am particularly drawn to this opportunity because it aligns well with my professional goals and expertise.
+
+I would welcome the opportunity to discuss how my skills and experience can contribute to GoDevs's continued success. Thank you for considering my application.
+
+Best regards,
+[Your Name]",api
+Senior Backend Engineer II,Gametime,Remote,Competitive,"Remote - Live experiences help people cross todayâs digital divide and focus on what truly connects us â the here, the now, this once-in-a-lifetime moment thatâs bringing us together. To fulfill Gametimeâs mission of uniting the world through shared experiences, we make ...<br/><br/>Please mention the word **CHIC** and tag RMzguNjguMTM0LjE5NA== when applying to show you read the job post completely (#RMzguNjguMTM0LjE5NA==). This is a beta feature to avoid spam applicants. Companies can s","['golang', 'senior', 'engineer', 'backend']",2025-06-29,https://remoteOK.com/remote-jobs/remote-senior-backend-engineer-ii-gametime-1093453,,Remote OK,2025-06-29T22:59:09.330893,pending,0.0,0.0,0.0,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager,
+
+I am writing to express my strong interest in the Senior Backend Engineer II position at Gametime. Based on my background and experience, I believe I would be a valuable addition to your team.
+
+My relevant experience includes the key qualifications mentioned in your job posting. I am particularly drawn to this opportunity because it aligns well with my professional goals and expertise.
+
+I would welcome the opportunity to discuss how my skills and experience can contribute to Gametime's continued success. Thank you for considering my application.
+
+Best regards,
+[Your Name]",api
+React Native Developer,Interviews Chat,Remote,Competitive,"<p class=""p1""><strong>About Us<br /><br /></strong>Interviews Chat is an AI-powered platform helping people ace their job interviews in 32 languages around the world. It features <a href=""https://www.interviews.chat"">Interview Copilot</a> for real-time support during online interviews, and an Interview Prep module to help you practice tailored questions. Built with Next.js, React, Node.js, and OpenAI, the platform is growing fast! We've recently launched a Chrome extension and a desktop app â ","['dev', 'react native']",2025-06-29,https://remoteOK.com/remote-jobs/remote-react-native-developer-interviews-chat-1093451,,Remote OK,2025-06-29T22:59:09.331052,pending,0.0,0.0,0.0,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager,
+
+I am writing to express my strong interest in the React Native Developer position at Interviews Chat. Based on my background and experience, I believe I would be a valuable addition to your team.
+
+My relevant experience includes the key qualifications mentioned in your job posting. I am particularly drawn to this opportunity because it aligns well with my professional goals and expertise.
+
+I would welcome the opportunity to discuss how my skills and experience can contribute to Interviews Chat's continued success. Thank you for considering my application.
+
+Best regards,
+[Your Name]",api
+Heavy Maintenance Representative,Allegiant,Remote,"$95,383 - $123,845","<p><span style=""font-size: 14px;"">Short Description</span></p><p><span style=""font-size: 14px;"">The Heavy Maintenance Representative supervises and oversees Allegiant Airâs heavy maintenance, modification, aircraft induction work and repairs performed by outside maintenance vendors (MRO).</span></p><p><br></p><p><span style=""font-size: 14px;"">Summary</span></p><p><span style=""font-size: 14px;"">The Heavy Maintenance Representative reports to the Senior Manager of Heavy Maintenance and Induction","['director', 'travel', 'manager', 'financial', 'education', 'senior', 'non tech']",2025-06-29,https://remoteOK.com/remote-jobs/remote-heavy-maintenance-representative-allegiant-1093447,,Remote OK,2025-06-29T22:59:09.331216,pending,0.0,0.0,0.0,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager,
+
+I am writing to express my strong interest in the Heavy Maintenance Representative position at Allegiant. Based on my background and experience, I believe I would be a valuable addition to your team.
+
+My relevant experience includes the key qualifications mentioned in your job posting. I am particularly drawn to this opportunity because it aligns well with my professional goals and expertise.
+
+I would welcome the opportunity to discuss how my skills and experience can contribute to Allegiant's continued success. Thank you for considering my application.
+
+Best regards,
+[Your Name]",api
+Freelance Screenshot Collector Chinese,TransPerfect,Remote,$0,<p><strong><span>DataForce by TransPerfect</span></strong><span> is looking for </span><strong><span>Screenshot Collectors</span></strong><span> in the United States to contribute to an innovative Artificial Intelligence project.Â </span></p><p></p><p><strong><span>Work Location</span></strong><span>: Remote/Work-from-home within the United Statesâ¯Â Â </span></p><p><strong><span>Engagement Model</span></strong><span>:Â  Independent Contractor / FreelanceÂ Â </span></p><p><strong><span>Estimate,"['ios', 'macos', 'content']",2025-06-29,https://remoteOK.com/remote-jobs/remote-freelance-screenshot-collector-chinese-transperfect-1093446,DataForce.Sourcing@transperfect.com,Remote OK,2025-06-29T22:59:09.331373,pending,0.0,0.0,0.0,CV-adaptive match based on mid level and 3 skills,"Dear Hiring Manager,
+
+I am writing to express my strong interest in the Freelance Screenshot Collector Chinese position at TransPerfect. Based on my background and experience, I believe I would be a valuable addition to your team.
+
+My relevant experience includes the key qualifications mentioned in your job posting. I am particularly drawn to this opportunity because it aligns well with my professional goals and expertise.
+
+I would welcome the opportunity to discuss how my skills and experience can contribute to TransPerfect's continued success. Thank you for considering my application.
+
+Best regards,
+[Your Name]",api

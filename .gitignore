@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+.env
+.venv/
+# Node / React
+node_modules/
+build/
+# Misc
+*.log
+.DS_Store

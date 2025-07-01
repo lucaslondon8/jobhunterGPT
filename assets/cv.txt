@@ -1,0 +1,33 @@
+Lucas Rizzo - Web3 Engineer & DeFi Bot Developer
+
+PROFESSIONAL SUMMARY
+Experienced Web3 Engineer and DeFi Bot Developer with 300+ hours of hands-on blockchain development experience. Proven track record in building production-grade liquidation bots, smart contract systems, and automated ERC-20 token ecosystems. Successfully achieved 18% job application response rate through strategic technical positioning and personalized outreach.
+
+CORE TECHNICAL SKILLS
+• Blockchain Development: Solidity, Smart Contracts, DeFi Protocol Development
+• Web3 Technologies: Ethers.js, Web3.js, MetaMask Integration, IPFS
+• Programming Languages: Python, JavaScript, Node.js, TypeScript
+• DeFi Specialization: Flash Loans, Liquidation Bots, MEV Protection, Yield Farming
+• Backend Development: FastAPI, Express.js, RESTful APIs, Database Design
+• Frontend Development: React, HTML5, CSS3, Responsive Design
+
+KEY ACHIEVEMENTS
+• Built production-grade liquidation bots with stealth relay systems
+• Developed automated ERC-20 token ecosystems with real-time monitoring
+• Implemented MEV protection mechanisms for DeFi protocols
+• Created flash loan arbitrage systems with risk management
+• Achieved 18% job application response rate (vs 2-3% industry average)
+• Co-founded and scaled food startup to £100k+ revenue in 6 months
+• CompTIA Security+ certified
+
+TECHNICAL PROJECTS
+• DeFi Liquidation Bot System: Production-grade monitoring for major protocols
+• Automated ERC-20 Token Ecosystem: Smart contract suite with governance
+• Flash Loan Arbitrage System: Multi-protocol detection and execution
+• MEV Protection Tools: Stealth relay mechanisms for transaction privacy
+
+WORK PREFERENCES
+• Remote work preferred (async collaboration)
+• Open to contract, part-time, or full-time opportunities
+• Passionate about decentralized technologies and financial innovation
+• Available for immediate start on exciting Web3 and DeFi projects
