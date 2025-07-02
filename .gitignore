@@ -9,3 +9,11 @@ build/
 # Misc
 *.log
 .DS_Store
+cv_analyzer.py
+fix_directories.py
+quick_fix.py
+universal_scraper.py
+setup.sh
+setup_project.py
+simple-start.sh
+start_jobhunt.py
