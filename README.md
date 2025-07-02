@@ -23,7 +23,7 @@
 |  Area                       |  What it does                                                                                 |
 | --------------------------- | --------------------------------------------------------------------------------------------- |
 | **CV Analysis**             | Parses any résumé (plain‑text or PDF) and extracts skills, seniority, industries & keywords.  |
-| **Job Discovery**           | Universal web‑scraper (with Selenium fallback) plus site‑specific modules in `scraper/`.      |
+| **Job Discovery**           | Universal web‑scraper (with Selenium fallback) plus site‑specific modules in `scraper/`. Supports Indeed, Reed, LinkedIn, Totaljobs, Monster and Glassdoor. |
 | **Adaptive Matching**       | Scores each job against the extracted CV profile to surface the strongest leads.              |
 | **Cover‑Letter Generation** | Uses Cohere Llama‑3 via API — with a rate‑limited wrapper and Markdown templates as fallback. |
 | **REST API**                | FastAPI server (`server.py`) exposes endpoints for stats, recent jobs, and pipeline triggers. |
