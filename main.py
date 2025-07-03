@@ -28,7 +28,7 @@ except ImportError:
     print("❌ Error: config.py not found. Please create config.py first.")
     sys.exit(1)
 
-# Import CV analyzer and universal scraper
+# Import CV analyzer
 try:
     from cv_analyzer import analyze_any_cv
     CV_ANALYZER_AVAILABLE = True
@@ -38,18 +38,10 @@ except ImportError:
     CV_ANALYZER_AVAILABLE = False
     analyze_any_cv = None
 
-try:
-    from universal_scraper import UniversalJobScraper
-    UNIVERSAL_SCRAPER_AVAILABLE = True
-    print("✅ Universal Scraper imported")
-except ImportError:
-    print("⚠️  Universal Scraper not found - Using basic scraper")
-    UNIVERSAL_SCRAPER_AVAILABLE = False
-    UniversalJobScraper = None
-
 # Import your existing modules (fallback)
 scraper_module = None
 matcher_module = None
+DYNAMIC_SCRAPER_AVAILABLE = False
 
 print("🔍 Detecting available modules...")
 
@@ -65,6 +57,14 @@ try:
 except ImportError as e:
     print(f"❌ Could not import matcher: {e}")
 
+try:
+    from scraper.dynamic_scraper import scrape_jobs_dynamically
+    DYNAMIC_SCRAPER_AVAILABLE = True
+    print("✅ Dynamic Scraper imported successfully")
+except ImportError as e:
+    print(f"⚠️  Dynamic Scraper not available: {e}")
+    DYNAMIC_SCRAPER_AVAILABLE = False
+
 load_dotenv()
 
 class CVAdaptiveJobBot:
@@ -77,11 +77,6 @@ class CVAdaptiveJobBot:
         # Initialize CV profile
         self.cv_profile = None
         self.cv_text = None
-        
-        # Initialize components based on availability
-        self.universal_scraper = None
-        if UNIVERSAL_SCRAPER_AVAILABLE:
-            self.universal_scraper = UniversalJobScraper()
         
         # Rate-limited cover letter generator
         self.generator = RateLimitedCoverLetterGenerator()
@@ -194,19 +189,19 @@ class CVAdaptiveJobBot:
         self.logger.info("🔍 Starting adaptive job discovery...")
         
         try:
-            # Use universal scraper if available
-            if UNIVERSAL_SCRAPER_AVAILABLE and self.universal_scraper:
-                print("\n🎯 ADAPTIVE JOB DISCOVERY")
+            # Use dynamic scraper if available
+            if DYNAMIC_SCRAPER_AVAILABLE:
+                print("\n🎯 DYNAMIC JOB DISCOVERY")
                 print("=" * 40)
-                
-                jobs_data = self.universal_scraper.discover_jobs(self.cv_text, max_jobs=120)
-                
+
+                jobs_data = scrape_jobs_dynamically(self.cv_profile or {}, max_jobs=120)
+
                 if jobs_data:
                     self.stats['scraped_jobs'] = len(jobs_data)
-                    self.logger.info(f"✅ Found {len(jobs_data)} jobs using adaptive discovery")
+                    self.logger.info(f"✅ Found {len(jobs_data)} jobs using dynamic discovery")
                     return jobs_data
                 else:
-                    print("⚠️  Adaptive discovery found no jobs, falling back to basic scraper")
+                    print("⚠️  Dynamic discovery found no jobs, falling back to basic scraper")
             
             # Fallback to existing scraper
             if scraper_module and hasattr(scraper_module, 'main'):
@@ -386,7 +381,7 @@ class CVAdaptiveJobBot:
         print(f"   • Jobs discovered: {self.stats['scraped_jobs']}")
         print(f"   • Jobs matched: {self.stats['matched_jobs']}")
         print(f"   • Cover letters generated: {self.stats['cover_letters_generated']}")
-        print(f"   • Discovery method: {'Adaptive' if UNIVERSAL_SCRAPER_AVAILABLE else 'Standard'}")
+        print(f"   • Discovery method: {'Dynamic' if DYNAMIC_SCRAPER_AVAILABLE else 'Standard'}")
         print(f"   • Matching method: {'CV-Adaptive' if self.cv_profile else 'Basic'}")
         
         if matched_jobs:

@@ -205,8 +205,8 @@ class CVDrivenJobScraper:
         
         return list(set(keywords))[:15]  # Return unique keywords, max 15
     
-    def scrape_jobs_for_cv(self, cv_text: str, max_jobs: int = 10) -> List[Dict]:
-        """Main function to scrape jobs based on CV content"""
+    def scrape_jobs_for_cv(self, cv_text: str, max_jobs: int = 50) -> List[Dict]:
+        """Main function to scrape jobs based on CV content (defaults to 50 jobs)"""
         
         print(f"🔍 Analyzing CV content for targeted job search...")
         
@@ -608,8 +608,8 @@ class CVDrivenJobScraper:
         
         return unique_jobs
 
-def scrape_jobs_for_cv_content(cv_text: str, max_jobs: int = 10) -> List[Dict]:
-    """Main function to scrape jobs based on CV content"""
+def scrape_jobs_for_cv_content(cv_text: str, max_jobs: int = 50) -> List[Dict]:
+    """Main function to scrape jobs based on CV content (defaults to 50 jobs)"""
     
     print(f"🎯 Starting CV-driven job discovery...")
     

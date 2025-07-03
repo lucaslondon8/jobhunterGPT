@@ -624,8 +624,8 @@ async def upload_cv(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"CV processing failed: {str(e)}")
 
 @app.post("/api/discover-jobs")
-async def discover_jobs(max_jobs: int = 10):
-    """Discover jobs DYNAMICALLY based on uploaded CV analysis"""
+async def discover_jobs(max_jobs: int = 50):
+    """Discover jobs DYNAMICALLY based on uploaded CV analysis (defaults to 50 jobs)"""
     
     try:
         if not user_data["cv_analysis"]:

@@ -108,8 +108,8 @@ class DynamicJobScraper:
 
         return search_terms
 
-    def scrape_dynamic_jobs(self, cv_analysis: dict, max_jobs: int = 10) -> List[Dict]:
-        """Scrape jobs dynamically based on CV analysis"""
+    def scrape_dynamic_jobs(self, cv_analysis: dict, max_jobs: int = 50) -> List[Dict]:
+        """Scrape jobs dynamically based on CV analysis (defaults to 50 jobs)"""
 
         search_terms = self.extract_search_terms_from_cv(cv_analysis)
         all_jobs = []
@@ -692,8 +692,8 @@ class DynamicJobScraper:
         return unique_jobs
 
 
-def scrape_jobs_dynamically(cv_analysis: dict, max_jobs: int = 10) -> List[Dict]:
-    """Main function to scrape jobs dynamically based on CV"""
+def scrape_jobs_dynamically(cv_analysis: dict, max_jobs: int = 50) -> List[Dict]:
+    """Main function to scrape jobs dynamically based on CV (defaults to 50 jobs)"""
 
     print(f"🚀 Starting DYNAMIC job scraping based on CV analysis...")
     print(f"   Industry: {cv_analysis.get('primary_industry', 'unknown')}")

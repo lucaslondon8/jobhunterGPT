@@ -23,7 +23,7 @@
 |  Area                       |  What it does                                                                                 |
 | --------------------------- | --------------------------------------------------------------------------------------------- |
 | **CV Analysis**             | Parses any résumé (plain‑text or PDF) and extracts skills, seniority, industries & keywords.  |
-| **Job Discovery**           | Universal web‑scraper (with Selenium fallback) plus site‑specific modules in `scraper/` – scrapers paginate until `max_jobs` results are gathered. |
+| **Job Discovery**           | Dynamic scrapers paginate job searches across multiple sites, while dedicated modules in `scraper/` target platforms like LinkedIn and Indeed. |
 | **Adaptive Matching**       | Scores each job against the extracted CV profile to surface the strongest leads.              |
 | **Cover‑Letter Generation** | Uses Cohere Llama‑3 via API — with a rate‑limited wrapper and Markdown templates as fallback. |
 | **REST API**                | FastAPI server (`server.py`) exposes endpoints for stats, recent jobs, and pipeline triggers. |
@@ -110,7 +110,7 @@ jobhunterGPT/
 ├── assets/             # sample CVs, images, prompts
 ├── frontend/           # React / Next.js dashboard
 ├── matcher/            # TF‑IDF + rule‑based matchers
-├── scraper/            # site scrapers & UniversalJobScraper
+├── scraper/            # dynamic & site-specific scrapers
 ├── output/             # CSVs, cover letters, logs
 ├── main.py             # orchestrates the full pipeline
 ├── server.py           # FastAPI entry‑point
