@@ -23,6 +23,15 @@ class DynamicJobScraper:
         }
         self.session = requests.Session()
         self.session.headers.update(self.headers)
+        self.user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        ]
+
+    def _get_random_user_agent(self):
+        return random.choice(self.user_agents)
 
     def extract_search_terms_from_cv(self, cv_analysis: dict) -> Dict[str, List[str]]:
         """Extract dynamic search terms from CV analysis"""
@@ -42,64 +51,103 @@ class DynamicJobScraper:
         # Dynamic job titles based on industry and skills
         if industry in ["sales", "sales_business_development", "business_development"]:
             base_titles = [
-                "sales",
-                "business development",
-                "account manager",
-                "sales manager",
+                "sales", "business development", "account manager", "sales manager",
+                "sales executive", "client relationship manager", "key account manager",
+                "sales representative", "commercial manager"
             ]
             if "crm" in [s.lower() for s in skills]:
-                base_titles.extend(["crm specialist", "salesforce administrator"])
+                base_titles.extend(["crm specialist", "salesforce administrator", "sales operations"])
             if any(s in ["partnership", "partnerships"] for s in skills):
-                base_titles.append("partnership manager")
+                base_titles.extend(["partnership manager", "channel sales manager"])
+            if "b2b" in [s.lower() for s in skills]:
+                base_titles.append("b2b sales")
+            if "b2c" in [s.lower() for s in skills]:
+                base_titles.append("b2c sales")
+
 
         elif industry in ["marketing", "digital_marketing"]:
-            base_titles = ["marketing", "digital marketing", "marketing manager"]
+            base_titles = [
+                "marketing", "digital marketing", "marketing manager", "marketing executive",
+                "brand manager", "product marketing manager", "content manager", "communications manager"
+            ]
             if "seo" in [s.lower() for s in skills]:
-                base_titles.extend(["seo specialist", "digital marketing specialist"])
+                base_titles.extend(["seo specialist", "digital marketing specialist", "search engine marketing manager"])
             if "social media" in " ".join(skills).lower():
-                base_titles.append("social media manager")
+                base_titles.extend(["social media manager", "community manager"])
+            if "ppc" in [s.lower() for s in skills] or "paid search" in " ".join(skills).lower():
+                base_titles.append("ppc specialist")
 
         elif industry in ["finance", "fintech"]:
-            base_titles = ["financial analyst", "finance", "accounting"]
+            base_titles = [
+                "financial analyst", "finance", "accounting", "accountant", "finance manager",
+                "management accountant", "financial controller", "auditor"
+            ]
             if "investment" in [s.lower() for s in skills]:
-                base_titles.append("investment analyst")
+                base_titles.extend(["investment analyst", "portfolio manager"])
+            if "risk" in [s.lower() for s in skills]:
+                base_titles.append("risk analyst")
 
         elif industry in ["tech", "software", "engineering", "blockchain"]:
-            base_titles = ["developer", "engineer", "software engineer"]
+            base_titles = [
+                "developer", "engineer", "software engineer", "software developer",
+                "programmer", "it support", "systems administrator", "devops engineer",
+                "data scientist", "data analyst", "machine learning engineer"
+            ]
             if "python" in [s.lower() for s in skills]:
-                base_titles.extend(["python developer", "backend engineer"])
+                base_titles.extend(["python developer", "backend engineer", "django developer", "flask developer"])
             if "javascript" in [s.lower() for s in skills]:
-                base_titles.extend(["javascript developer", "frontend developer"])
-            if any(s in ["blockchain", "web3", "ethereum"] for s in skills):
-                base_titles.extend(["blockchain developer", "web3 engineer"])
+                base_titles.extend(["javascript developer", "frontend developer", "react developer", "angular developer", "vue developer", "full stack developer"])
+            if "java" in [s.lower() for s in skills]:
+                base_titles.extend(["java developer", "java engineer"])
+            if "c#" in [s.lower() for s in skills] or ".net" in [s.lower() for s in skills]:
+                base_titles.extend(["c# developer", ".net developer"])
+            if any(s in ["blockchain", "web3", "ethereum", "solidity"] for s in skills):
+                base_titles.extend(["blockchain developer", "web3 engineer", "solidity developer"])
+            if "cloud" in [s.lower() for s in skills] or "aws" in [s.lower() for s in skills] or "azure" in [s.lower() for s in skills] or "gcp" in [s.lower() for s in skills]:
+                base_titles.append("cloud engineer")
+
 
         else:
             # Generic business roles
-            base_titles = ["analyst", "coordinator", "specialist", "manager"]
+            base_titles = [
+                "analyst", "coordinator", "specialist", "manager", "consultant",
+                "project manager", "operations manager", "administrator", "executive assistant"
+            ]
 
-        # Add experience level prefixes
+        # Add experience level prefixes/suffixes and create more variations
+        processed_titles = set() # Using a set to avoid duplicates
+
+        # Original titles
+        for title in base_titles:
+            processed_titles.add(title)
+
         if experience_level == "senior":
-            search_terms["job_titles"] = [
-                f"senior {title}" for title in base_titles[:4]
-            ]
-            search_terms["job_titles"].extend(
-                [f"lead {title}" for title in base_titles[:2]]
-            )
-            search_terms["experience_terms"] = ["senior", "lead", "principal"]
+            for title in base_titles:
+                processed_titles.add(f"senior {title}")
+                processed_titles.add(f"lead {title}")
+                processed_titles.add(f"{title} lead")
+            search_terms["experience_terms"] = ["senior", "lead", "principal", "experienced", "staff"]
         elif experience_level == "junior":
-            search_terms["job_titles"] = [
-                f"junior {title}" for title in base_titles[:4]
-            ]
-            search_terms["job_titles"].extend(
-                [f"graduate {title}" for title in base_titles[:2]]
-            )
-            search_terms["experience_terms"] = ["junior", "graduate", "entry level"]
-        else:
-            search_terms["job_titles"] = base_titles
-            search_terms["experience_terms"] = ["mid level", "experienced"]
+            for title in base_titles:
+                processed_titles.add(f"junior {title}")
+                processed_titles.add(f"graduate {title}")
+                processed_titles.add(f"entry level {title}")
+                processed_titles.add(f"assistant {title}")
+            search_terms["experience_terms"] = ["junior", "graduate", "entry level", "assistant", "trainee"]
+        else: # Mid-level
+            for title in base_titles: # Mid-level can sometimes just be the title itself, or with 'experienced'
+                processed_titles.add(title)
+            search_terms["experience_terms"] = ["mid level", "experienced", "intermediate"]
 
-        # Industry-specific terms
+        search_terms["job_titles"] = list(processed_titles)[:15] # Limit to a reasonable number to avoid overly broad searches initially
+
+        # Industry-specific terms - consider adding related terms if industry is broad
         search_terms["industry_terms"] = [industry.replace("_", " ")]
+        if industry == "tech":
+            search_terms["industry_terms"].extend(["information technology", "software development"])
+        elif industry == "sales_business_development":
+            search_terms["industry_terms"].append("business services")
+
 
         print(f"🎯 Dynamic search terms generated:")
         print(f"   Job Titles: {search_terms['job_titles'][:5]}")
@@ -163,19 +211,30 @@ class DynamicJobScraper:
                 while len(jobs) < max_jobs:
                     url = f"https://uk.indeed.com/jobs?q={encoded_query}&l=&sort=date&start={start}"
 
-                    response = self.session.get(url, timeout=15)
+                    headers = self.session.headers.copy()
+                    headers["User-Agent"] = self._get_random_user_agent()
 
-                    if response.status_code != 200:
-                        break
+                    try:
+                        response = self.session.get(url, headers=headers, timeout=30)
+                        response.raise_for_status() # Raises HTTPError for bad responses (4XX or 5XX)
+
+                    except requests.exceptions.Timeout:
+                        print(f"❌ Indeed request timed out for '{query}' (start {start}). Skipping this query page.")
+                        break # Break from pagination for this query
+                    except requests.exceptions.RequestException as e:
+                        print(f"❌ Indeed request failed for '{query}': {e}")
+                        break # Break from pagination for this query
 
                     soup = BeautifulSoup(response.content, "html.parser")
 
                     # Updated Indeed selectors (they change frequently)
-                    job_cards = soup.find_all(
-                        "div", {"data-jk": True}
-                    ) or soup.find_all("div", class_="job_seen_beacon")
+                    # Prioritize data-jk attribute as it's often more stable
+                    job_cards = soup.find_all("div", {"data-jk": True})
+                    if not job_cards:
+                        job_cards = soup.find_all("div", class_=re.compile(r"job.*result|job_seen_beacon", re.I))
 
                     if not job_cards:
+                        print(f"ℹ️ No job cards found on Indeed for '{query}' (start {start}). Structure might have changed or no results.")
                         break
 
                     for card in job_cards:
@@ -185,12 +244,12 @@ class DynamicJobScraper:
                         if job:
                             jobs.append(job)
 
-                    start += 10
-                    time.sleep(1)  # Rate limiting
+                    start += 10 # Indeed uses 'start' parameter for pagination (usually 10 jobs per page)
+                    time.sleep(random.uniform(2, 5))  # Increased and randomized delay
 
-            except Exception as e:
-                print(f"⚠️  Indeed search failed for '{query}': {e}")
-                continue
+            except Exception as e: # Catch any other unexpected errors for this query
+                print(f"⚠️  Indeed search failed unexpectedly for '{query}': {e}")
+                continue # Continue to the next query
 
         return jobs
 
@@ -208,18 +267,29 @@ class DynamicJobScraper:
                 while len(jobs) < max_jobs:
                     url = f"https://www.reed.co.uk/jobs/{encoded_query}-jobs?pageno={page}"
 
-                    response = self.session.get(url, timeout=15)
+                    headers = self.session.headers.copy()
+                    headers["User-Agent"] = self._get_random_user_agent()
 
-                    if response.status_code != 200:
+                    try:
+                        response = self.session.get(url, headers=headers, timeout=30)
+                        response.raise_for_status()
+                    except requests.exceptions.Timeout:
+                        print(f"❌ Reed request timed out for '{title}' (page {page}). Skipping this query page.")
+                        break
+                    except requests.exceptions.RequestException as e:
+                        print(f"❌ Reed request failed for '{title}': {e}")
                         break
 
                     soup = BeautifulSoup(response.content, "html.parser")
 
-                    job_cards = soup.find_all(
-                        "article", class_="job-result"
-                    ) or soup.find_all("div", class_="job-result")
+                    job_cards = soup.find_all("article", class_=re.compile(r"\bjob-result\b", re.I))
+                    if not job_cards:
+                        # Fallback for slight variations
+                        job_cards = soup.find_all("div", class_=re.compile(r"\bjob-result\b", re.I))
+
 
                     if not job_cards:
+                        print(f"ℹ️ No job cards found on Reed for '{title}' (page {page}). Structure might have changed or no results.")
                         break
 
                     for card in job_cards:
@@ -230,11 +300,11 @@ class DynamicJobScraper:
                             jobs.append(job)
 
                     page += 1
-                    time.sleep(1)
+                    time.sleep(random.uniform(2, 5)) # Increased and randomized delay
 
-            except Exception as e:
-                print(f"⚠️  Reed search failed for '{title}': {e}")
-                continue
+            except Exception as e: # Catch any other unexpected errors for this query
+                print(f"⚠️  Reed search failed unexpectedly for '{title}': {e}")
+                continue # Continue to the next title
 
         return jobs
 
@@ -288,18 +358,27 @@ class DynamicJobScraper:
                 while len(jobs) < max_jobs:
                     url = f"https://www.totaljobs.com/jobs/{encoded_query}?page={page}"
 
-                    response = self.session.get(url, timeout=15)
+                    headers = self.session.headers.copy()
+                    headers["User-Agent"] = self._get_random_user_agent()
+
+                    response = self.session.get(url, headers=headers, timeout=30)
 
                     if response.status_code != 200:
+                        print(f"⚠️ Totaljobs returned status {response.status_code} for '{title}' on page {page}")
                         break
 
                     soup = BeautifulSoup(response.content, "html.parser")
 
-                    job_cards = soup.find_all("div", class_="job") or soup.find_all(
-                        "article"
-                    )
+                    # Try to find job cards using a more robust selector if possible
+                    # This might need adjustment based on Totaljobs current HTML structure
+                    job_cards = soup.find_all("div", class_=re.compile(r"\bjob\b", re.I))
+                    if not job_cards:
+                         # Fallback to article tag if the primary selector fails
+                        job_cards = soup.find_all("article", class_=re.compile(r"job-listing|job-item", re.I))
 
                     if not job_cards:
+                        # If still no job cards, log it and break for this query
+                        print(f"ℹ️ No job cards found on Totaljobs for '{title}' on page {page}. Structure might have changed.")
                         break
 
                     for card in job_cards:
@@ -310,10 +389,14 @@ class DynamicJobScraper:
                             jobs.append(job)
 
                     page += 1
-                    time.sleep(1)
+                    time.sleep(random.uniform(2, 5)) # Increased and randomized delay
 
-            except Exception as e:
-                print(f"⚠️  Totaljobs search failed for '{title}': {e}")
+            except requests.exceptions.Timeout:
+                print(f"❌ Totaljobs request timed out for '{title}' (page {page}). Skipping this query.")
+                # Optionally, you could break from the outer loop for this title if timeouts persist
+                break
+            except requests.exceptions.RequestException as e:
+                print(f"❌ Totaljobs request failed for '{title}': {e}")
                 continue
 
         return jobs
@@ -332,76 +415,73 @@ class DynamicJobScraper:
                 while len(jobs) < max_jobs:
                     url = f"https://www.monster.co.uk/jobs/search/?q={encoded_query}&page={page}"
 
-                    response = self.session.get(url, timeout=15)
+                    headers = self.session.headers.copy()
+                    headers["User-Agent"] = self._get_random_user_agent()
 
-                    if response.status_code != 200:
+                    try:
+                        response = self.session.get(url, headers=headers, timeout=30)
+                        response.raise_for_status()
+                    except requests.exceptions.Timeout:
+                        print(f"❌ Monster request timed out for '{title}' (page {page}). Skipping this query page.")
+                        break
+                    except requests.exceptions.RequestException as e:
+                        print(f"❌ Monster request failed for '{title}': {e}")
                         break
 
                     soup = BeautifulSoup(response.content, "html.parser")
 
-                    job_cards = soup.find_all(
-                        "section", class_="card-content"
-                    ) or soup.find_all("div", class_="summary")
+                    # Monster's structure can vary; try a few common patterns
+                    job_cards = soup.find_all("section", class_=re.compile(r"card-content|job-card", re.I))
+                    if not job_cards:
+                        job_cards = soup.find_all("div", class_=re.compile(r"summary|job-entry", re.I))
 
                     if not job_cards:
+                        print(f"ℹ️ No job cards found on Monster for '{title}' (page {page}). Structure might have changed or no results.")
                         break
 
                     for card in job_cards:
                         if len(jobs) >= max_jobs:
                             break
-                        title_elem = card.find("h2") or card.find("a")
-                        job_title = (
-                            title_elem.get_text(strip=True)
-                            if title_elem
-                            else title.title()
-                        )
 
-                        company_elem = card.find("div", class_="company") or card.find(
-                            "span", class_="name"
-                        )
-                        company = (
-                            company_elem.get_text(strip=True)
-                            if company_elem
-                            else "Monster Company"
-                        )
+                        # Title
+                        title_elem = card.find("h2", class_=re.compile(r"jobTitle|title", re.I)) or \
+                                     card.find("a", href=re.compile(r"/job/", re.I))
+                        job_title = title_elem.get_text(strip=True) if title_elem else title.title()
 
-                        location_elem = card.find(
-                            "div", class_="location"
-                        ) or card.find("span", class_="location")
-                        location = (
-                            location_elem.get_text(strip=True)
-                            if location_elem
-                            else "UK"
-                        )
+                        # Company
+                        company_elem = card.find("div", class_=re.compile(r"companyName|company", re.I)) or \
+                                       card.find("span", class_=re.compile(r"name", re.I))
+                        company = company_elem.get_text(strip=True) if company_elem else "Monster Partner Company"
 
-                        summary_elem = card.find("div", class_="summary") or card.find(
-                            "p"
-                        )
-                        description = (
-                            summary_elem.get_text(strip=True)
-                            if summary_elem
-                            else f"{job_title} role"
-                        )
+                        # Location
+                        location_elem = card.find("div", class_=re.compile(r"location", re.I)) or \
+                                        card.find("span", class_=re.compile(r"location", re.I))
+                        location = location_elem.get_text(strip=True) if location_elem else "UK"
+
+                        # Description/Summary
+                        summary_elem = card.find("p", class_=re.compile(r"job-description|summary", re.I)) or \
+                                       card.find("div", class_=re.compile(r"summary|description", re.I))
+                        description = summary_elem.get_text(strip=True)[:300] if summary_elem else f"Details for {job_title}"
 
                         jobs.append(
                             {
                                 "title": job_title,
                                 "company": company,
                                 "location": location,
-                                "salary": "Competitive",
-                                "description": description[:300],
+                                "salary": "Competitive", # Monster often doesn't show salary directly in search results
+                                "description": description,
                                 "contact_email": self._generate_contact_email(company),
                                 "source": "Monster",
-                                "posted_date": "Recent",
+                                "posted_date": "Recent", # Monster date parsing can be complex from search results
                             }
                         )
 
                     page += 1
-                    time.sleep(1)
+                    time.sleep(random.uniform(2, 5)) # Increased and randomized delay
 
-            except Exception as e:
-                print(f"⚠️  Monster search failed for '{title}': {e}")
-                continue
+            except Exception as e: # Catch any other unexpected errors for this query
+                print(f"⚠️  Monster search failed unexpectedly for '{title}': {e}")
+                continue # Continue to the next title
 
         return jobs
 
@@ -419,78 +499,77 @@ class DynamicJobScraper:
                 while len(jobs) < max_jobs:
                     url = f"https://www.glassdoor.co.uk/Job/jobs.htm?sc.keyword={encoded_query}&p={page}"
 
-                    response = self.session.get(url, timeout=15)
+                    headers = self.session.headers.copy()
+                    headers["User-Agent"] = self._get_random_user_agent()
 
-                    if response.status_code != 200:
+                    try:
+                        response = self.session.get(url, headers=headers, timeout=30)
+                        response.raise_for_status()
+                    except requests.exceptions.Timeout:
+                        print(f"❌ Glassdoor request timed out for '{title}' (page {page}). Skipping this query page.")
+                        break
+                    except requests.exceptions.RequestException as e:
+                        print(f"❌ Glassdoor request failed for '{title}': {e}")
                         break
 
                     soup = BeautifulSoup(response.content, "html.parser")
 
-                    job_cards = soup.find_all(
-                        "li", class_="react-job-listing"
-                    ) or soup.find_all("article")
+                    # Glassdoor selectors can be tricky due to React; prioritize specific attributes if possible
+                    job_cards = soup.find_all("li", class_=re.compile(r"react-job-listing|jobListing", re.I))
+                    if not job_cards:
+                        job_cards = soup.find_all("article", class_=re.compile(r"job-card|job", re.I))
+
 
                     if not job_cards:
+                        print(f"ℹ️ No job cards found on Glassdoor for '{title}' (page {page}). Structure might have changed or no results.")
                         break
 
                     for card in job_cards:
                         if len(jobs) >= max_jobs:
                             break
-                        title_elem = card.find("a", class_="jobLink") or card.find(
-                            "span"
-                        )
-                        job_title = (
-                            title_elem.get_text(strip=True)
-                            if title_elem
-                            else title.title()
-                        )
 
-                        company_elem = card.find(
-                            "div", class_="jobHeader"
-                        ) or card.find("div", class_="jobInfoItem")
-                        company = (
-                            company_elem.get_text(strip=True)
-                            if company_elem
-                            else "Glassdoor Company"
-                        )
+                        # Title (Glassdoor often has titles in links)
+                        title_elem = card.find("a", class_=re.compile(r"jobLink|jobTitle", re.I)) or \
+                                     card.find(["h2", "h3"], class_=re.compile(r"title", re.I))
+                        job_title = title_elem.get_text(strip=True) if title_elem else title.title()
 
-                        location_elem = card.find("span", class_="loc") or card.find(
-                            "span", class_="location"
-                        )
-                        location = (
-                            location_elem.get_text(strip=True)
-                            if location_elem
-                            else "UK"
-                        )
+                        # Company
+                        # Glassdoor often has company name without a very specific class, sometimes in a div or span near the title
+                        company_elem = card.find(["div", "span"], class_=re.compile(r"jobHeader|jobInfoItem|employerName", re.I))
+                        if company_elem:
+                             company_name_span = company_elem.find("span") # Often company name is within a span inside this div
+                             company = company_name_span.get_text(strip=True) if company_name_span else company_elem.get_text(strip=True)
+                        else:
+                            company = "Glassdoor Partner Company"
 
-                        summary_elem = card.find("div", class_="jobDesc") or card.find(
-                            "p"
-                        )
-                        description = (
-                            summary_elem.get_text(strip=True)
-                            if summary_elem
-                            else f"{job_title} role"
-                        )
+
+                        # Location
+                        location_elem = card.find("span", class_=re.compile(r"loc|location", re.I))
+                        location = location_elem.get_text(strip=True) if location_elem else "UK"
+
+                        # Description (Often not available or very short on search results page)
+                        summary_elem = card.find("div", class_=re.compile(r"jobDesc|snippet", re.I))
+                        description = summary_elem.get_text(strip=True)[:250] if summary_elem else f"View details for {job_title} on Glassdoor."
 
                         jobs.append(
                             {
                                 "title": job_title,
                                 "company": company,
                                 "location": location,
-                                "salary": "Competitive",
-                                "description": description[:300],
+                                "salary": "Competitive", # Salary often not directly on search results
+                                "description": description,
                                 "contact_email": self._generate_contact_email(company),
                                 "source": "Glassdoor",
-                                "posted_date": "Recent",
+                                "posted_date": "Recent", # Date parsing can be complex
                             }
                         )
 
                     page += 1
-                    time.sleep(1)
+                    time.sleep(random.uniform(2.5, 6)) # Glassdoor can be more sensitive, slightly longer delay
 
-            except Exception as e:
-                print(f"⚠️  Glassdoor search failed for '{title}': {e}")
-                continue
+            except Exception as e: # Catch any other unexpected errors for this query
+                print(f"⚠️  Glassdoor search failed unexpectedly for '{title}': {e}")
+                continue # Continue to the next title
 
         return jobs
 
@@ -720,7 +799,7 @@ def test_dynamic_scraping():
 
     sample_cv_analysis = {
         "primary_industry": "sales_business_development",
-        "experience_level": "mid",
+        "experience_level": "mid", # Changed to "mid" to test that path as well
         "skills": [
             "sales",
             "crm",
@@ -730,13 +809,16 @@ def test_dynamic_scraping():
             "partnerships",
             "pipeline management",
             "client relations",
+            "lead generation", # Added more skills
+            "closing deals"
         ],
     }
-
-    jobs = scrape_jobs_dynamically(sample_cv_analysis, max_jobs=8)
+    # Increased max_jobs significantly to ensure all scrapers are attempted
+    jobs = scrape_jobs_dynamically(sample_cv_analysis, max_jobs=100)
 
     print(f"\n🧪 TEST RESULTS:")
-    print(f"Found {len(jobs)} jobs for sales professional")
+    print(f"Attempted to find up to 100 jobs for sales professional.")
+    print(f"Found {len(jobs)} jobs in total.")
 
     return jobs
 
