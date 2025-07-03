@@ -28,13 +28,24 @@ class RealJobScraper:
         }
         self.session = requests.Session()
         self.session.headers.update(self.headers)
+
+    def _check_connection(self, url: str) -> bool:
+        """Return True if a HEAD request succeeds."""
+        try:
+            resp = self.session.head(url, timeout=10)
+            return resp.status_code < 400
+        except Exception:
+            return False
         
     def scrape_remote_ok(self, keywords=['web3', 'blockchain', 'defi', 'solidity'], limit=20):
         """Scrape Remote OK for Web3 jobs"""
         jobs = []
-        
+
         try:
             print("🔍 Scraping Remote OK...")
+            if not self._check_connection("https://remoteok.io"):
+                print("⚠️  Cannot connect to Remote OK")
+                return jobs
             
             # Remote OK has a JSON API
             url = "https://remoteok.io/api"
@@ -64,9 +75,12 @@ class RealJobScraper:
     def scrape_crypto_jobs(self, limit=20):
         """Scrape CryptoJobs.com for blockchain positions"""
         jobs = []
-        
+
         try:
             print("🔍 Scraping CryptoJobs...")
+            if not self._check_connection("https://cryptojobs.com"):
+                print("⚠️  Cannot connect to CryptoJobs")
+                return jobs
             
             url = "https://cryptojobs.com/"
             response = self.session.get(url, timeout=30)
@@ -94,9 +108,12 @@ class RealJobScraper:
     def scrape_indeed_uk(self, keywords=['web3', 'blockchain', 'solidity'], location='United Kingdom', limit=20):
         """Scrape Indeed UK for tech jobs"""
         jobs = []
-        
+
         try:
             print("🔍 Scraping Indeed UK...")
+            if not self._check_connection("https://uk.indeed.com"):
+                print("⚠️  Cannot connect to Indeed UK")
+                return jobs
             
             base_url = "https://uk.indeed.com/jobs"
             search_terms = " OR ".join(keywords)
@@ -132,9 +149,12 @@ class RealJobScraper:
     def scrape_github_jobs(self, keywords=['web3', 'blockchain', 'ethereum'], limit=15):
         """Scrape GitHub Jobs API (if available) or job boards"""
         jobs = []
-        
+
         try:
             print("🔍 Searching GitHub for job repos...")
+            if not self._check_connection("https://api.github.com"):
+                print("⚠️  Cannot connect to GitHub")
+                return jobs
             
             # Search GitHub repositories that contain job postings
             for keyword in keywords:
@@ -369,7 +389,7 @@ class RealJobScraper:
             return f"https://uk.indeed.com/job/{link.get('data-jk')}"
         return ''
 
-def scrape_web3_jobs(max_jobs=50):
+def scrape_web3_jobs(max_jobs=120):
     """Main function to scrape Web3 jobs from multiple sources"""
     print("🚀 Starting REAL job scraping...")
     
@@ -378,10 +398,10 @@ def scrape_web3_jobs(max_jobs=50):
     
     # Scrape from multiple sources
     sources = [
-        ('Remote OK', lambda: scraper.scrape_remote_ok(limit=20)),
-        ('CryptoJobs', lambda: scraper.scrape_crypto_jobs(limit=15)),
-        ('Indeed UK', lambda: scraper.scrape_indeed_uk(limit=15)),
-        ('GitHub', lambda: scraper.scrape_github_jobs(limit=10))
+        ('Remote OK', lambda: scraper.scrape_remote_ok(limit=40)),
+        ('CryptoJobs', lambda: scraper.scrape_crypto_jobs(limit=30)),
+        ('Indeed UK', lambda: scraper.scrape_indeed_uk(limit=30)),
+        ('GitHub', lambda: scraper.scrape_github_jobs(limit=20))
     ]
     
     for source_name, scrape_func in sources:
@@ -452,7 +472,7 @@ def main():
             output_path = "output/jobs.csv"
         
         # Scrape real jobs
-        jobs_data = scrape_web3_jobs(max_jobs=50)
+        jobs_data = scrape_web3_jobs(max_jobs=120)
         
         if not jobs_data:
             print("❌ No real jobs found")

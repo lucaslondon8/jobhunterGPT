@@ -199,7 +199,7 @@ class CVAdaptiveJobBot:
                 print("\n🎯 ADAPTIVE JOB DISCOVERY")
                 print("=" * 40)
                 
-                jobs_data = self.universal_scraper.discover_jobs(self.cv_text, max_jobs=50)
+                jobs_data = self.universal_scraper.discover_jobs(self.cv_text, max_jobs=120)
                 
                 if jobs_data:
                     self.stats['scraped_jobs'] = len(jobs_data)
