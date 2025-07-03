@@ -125,9 +125,11 @@ class DynamicJobScraper:
         ]
 
         for source_name, scrape_func in sources:
+            if len(all_jobs) >= max_jobs:
+                break
             try:
                 print(f"\n📡 Scraping {source_name} with dynamic terms...")
-                jobs = scrape_func(search_terms, max_jobs)
+                jobs = scrape_func(search_terms, max_jobs - len(all_jobs))
                 all_jobs.extend(jobs)
                 print(f"✅ {source_name}: {len(jobs)} jobs found")
                 time.sleep(2)  # Rate limiting
@@ -147,21 +149,25 @@ class DynamicJobScraper:
         search_queries = []
 
         # Job title searches
-        for title in search_terms["job_titles"][:3]:
+        for title in search_terms["job_titles"]:
             search_queries.append(title)
 
         # Skills-based searches
-        for skill in search_terms["skills_keywords"][:2]:
+        for skill in search_terms["skills_keywords"]:
             search_queries.append(skill)
 
         for query in search_queries:
             try:
                 encoded_query = quote_plus(query)
-                url = f"https://uk.indeed.com/jobs?q={encoded_query}&l=&sort=date"
+                start = 0
+                while len(jobs) < max_jobs:
+                    url = f"https://uk.indeed.com/jobs?q={encoded_query}&l=&sort=date&start={start}"
 
-                response = self.session.get(url, timeout=15)
+                    response = self.session.get(url, timeout=15)
 
-                if response.status_code == 200:
+                    if response.status_code != 200:
+                        break
+
                     soup = BeautifulSoup(response.content, "html.parser")
 
                     # Updated Indeed selectors (they change frequently)
@@ -169,12 +175,18 @@ class DynamicJobScraper:
                         "div", {"data-jk": True}
                     ) or soup.find_all("div", class_="job_seen_beacon")
 
-                    for card in job_cards[:3]:  # Limit per query
+                    if not job_cards:
+                        break
+
+                    for card in job_cards:
+                        if len(jobs) >= max_jobs:
+                            break
                         job = self._extract_indeed_job_dynamic(card, query)
                         if job:
                             jobs.append(job)
 
-                time.sleep(1)  # Rate limiting
+                    start += 10
+                    time.sleep(1)  # Rate limiting
 
             except Exception as e:
                 print(f"⚠️  Indeed search failed for '{query}': {e}")
@@ -187,26 +199,38 @@ class DynamicJobScraper:
 
         jobs = []
 
-        for title in search_terms["job_titles"][:2]:
+        for title in search_terms["job_titles"]:
+            if len(jobs) >= max_jobs:
+                break
             try:
                 encoded_query = quote_plus(title)
-                url = f"https://www.reed.co.uk/jobs/{encoded_query}-jobs"
+                page = 1
+                while len(jobs) < max_jobs:
+                    url = f"https://www.reed.co.uk/jobs/{encoded_query}-jobs?pageno={page}"
 
-                response = self.session.get(url, timeout=15)
+                    response = self.session.get(url, timeout=15)
 
-                if response.status_code == 200:
+                    if response.status_code != 200:
+                        break
+
                     soup = BeautifulSoup(response.content, "html.parser")
 
                     job_cards = soup.find_all(
                         "article", class_="job-result"
                     ) or soup.find_all("div", class_="job-result")
 
-                    for card in job_cards[:2]:
+                    if not job_cards:
+                        break
+
+                    for card in job_cards:
+                        if len(jobs) >= max_jobs:
+                            break
                         job = self._extract_reed_job(card, title)
                         if job:
                             jobs.append(job)
 
-                time.sleep(1)
+                    page += 1
+                    time.sleep(1)
 
             except Exception as e:
                 print(f"⚠️  Reed search failed for '{title}': {e}")
@@ -229,7 +253,9 @@ class DynamicJobScraper:
         ]
         locations = ["London", "Manchester", "Birmingham", "Remote"]
 
-        for i, title in enumerate(search_terms["job_titles"][:3]):
+        for i, title in enumerate(search_terms["job_titles"]):
+            if len(jobs) >= max_jobs:
+                break
             job = {
                 "title": title.title(),
                 "company": companies[i % len(companies)],
@@ -253,27 +279,38 @@ class DynamicJobScraper:
 
         jobs = []
 
-        for title in search_terms["job_titles"][:2]:
+        for title in search_terms["job_titles"]:
+            if len(jobs) >= max_jobs:
+                break
             try:
-                # Totaljobs URL format
                 encoded_query = quote_plus(title)
-                url = f"https://www.totaljobs.com/jobs/{encoded_query}"
+                page = 1
+                while len(jobs) < max_jobs:
+                    url = f"https://www.totaljobs.com/jobs/{encoded_query}?page={page}"
 
-                response = self.session.get(url, timeout=15)
+                    response = self.session.get(url, timeout=15)
 
-                if response.status_code == 200:
+                    if response.status_code != 200:
+                        break
+
                     soup = BeautifulSoup(response.content, "html.parser")
 
                     job_cards = soup.find_all("div", class_="job") or soup.find_all(
                         "article"
                     )
 
-                    for card in job_cards[:2]:
+                    if not job_cards:
+                        break
+
+                    for card in job_cards:
+                        if len(jobs) >= max_jobs:
+                            break
                         job = self._extract_totaljobs_job(card, title)
                         if job:
                             jobs.append(job)
 
-                time.sleep(1)
+                    page += 1
+                    time.sleep(1)
 
             except Exception as e:
                 print(f"⚠️  Totaljobs search failed for '{title}': {e}")
@@ -286,21 +323,32 @@ class DynamicJobScraper:
 
         jobs = []
 
-        for title in search_terms["job_titles"][:2]:
+        for title in search_terms["job_titles"]:
+            if len(jobs) >= max_jobs:
+                break
             try:
                 encoded_query = quote_plus(title)
-                url = f"https://www.monster.co.uk/jobs/search/?q={encoded_query}"
+                page = 1
+                while len(jobs) < max_jobs:
+                    url = f"https://www.monster.co.uk/jobs/search/?q={encoded_query}&page={page}"
 
-                response = self.session.get(url, timeout=15)
+                    response = self.session.get(url, timeout=15)
 
-                if response.status_code == 200:
+                    if response.status_code != 200:
+                        break
+
                     soup = BeautifulSoup(response.content, "html.parser")
 
                     job_cards = soup.find_all(
                         "section", class_="card-content"
                     ) or soup.find_all("div", class_="summary")
 
-                    for card in job_cards[:2]:
+                    if not job_cards:
+                        break
+
+                    for card in job_cards:
+                        if len(jobs) >= max_jobs:
+                            break
                         title_elem = card.find("h2") or card.find("a")
                         job_title = (
                             title_elem.get_text(strip=True)
@@ -348,34 +396,46 @@ class DynamicJobScraper:
                             }
                         )
 
-                time.sleep(1)
+                    page += 1
+                    time.sleep(1)
 
             except Exception as e:
                 print(f"⚠️  Monster search failed for '{title}': {e}")
                 continue
 
-        return jobs[:max_jobs]
+        return jobs
 
     def scrape_glassdoor_dynamic(self, search_terms: Dict, max_jobs: int) -> List[Dict]:
         """Scrape Glassdoor with dynamic terms"""
 
         jobs = []
 
-        for title in search_terms["job_titles"][:2]:
+        for title in search_terms["job_titles"]:
+            if len(jobs) >= max_jobs:
+                break
             try:
                 encoded_query = quote_plus(title)
-                url = f"https://www.glassdoor.co.uk/Job/jobs.htm?sc.keyword={encoded_query}"
+                page = 1
+                while len(jobs) < max_jobs:
+                    url = f"https://www.glassdoor.co.uk/Job/jobs.htm?sc.keyword={encoded_query}&p={page}"
 
-                response = self.session.get(url, timeout=15)
+                    response = self.session.get(url, timeout=15)
 
-                if response.status_code == 200:
+                    if response.status_code != 200:
+                        break
+
                     soup = BeautifulSoup(response.content, "html.parser")
 
                     job_cards = soup.find_all(
                         "li", class_="react-job-listing"
                     ) or soup.find_all("article")
 
-                    for card in job_cards[:2]:
+                    if not job_cards:
+                        break
+
+                    for card in job_cards:
+                        if len(jobs) >= max_jobs:
+                            break
                         title_elem = card.find("a", class_="jobLink") or card.find(
                             "span"
                         )
@@ -425,13 +485,14 @@ class DynamicJobScraper:
                             }
                         )
 
-                time.sleep(1)
+                    page += 1
+                    time.sleep(1)
 
             except Exception as e:
                 print(f"⚠️  Glassdoor search failed for '{title}': {e}")
                 continue
 
-        return jobs[:max_jobs]
+        return jobs
 
     def _extract_indeed_job_dynamic(self, job_card, search_query: str) -> Dict:
         """Extract job from Indeed card with dynamic handling"""
