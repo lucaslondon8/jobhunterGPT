@@ -13,6 +13,16 @@ import re
 from urllib.parse import quote_plus
 import json
 
+# Selenium imports
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service # Added
+from webdriver_manager.chrome import ChromeDriverManager # Added
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
+
 
 class DynamicJobScraper:
     """Completely dynamic job scraper based on CV analysis"""
@@ -32,6 +42,28 @@ class DynamicJobScraper:
 
     def _get_random_user_agent(self):
         return random.choice(self.user_agents)
+
+    def _get_selenium_driver(self) -> webdriver.Chrome:
+        """Initializes and returns a headless Chrome WebDriver using webdriver-manager."""
+        chrome_options = ChromeOptions()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox") # Standard for running in containers/CI
+        chrome_options.add_argument("--disable-dev-shm-usage") # Overcome limited resource problems
+        chrome_options.add_argument("--disable-gpu") # Applicable to windows os only
+        # chrome_options.add_argument("--window-size=1920,1080") # Can sometimes help with headless rendering
+        chrome_options.add_argument(f"user-agent={self._get_random_user_agent()}")
+
+        try:
+            print("ℹ️ Initializing Selenium WebDriver with ChromeDriverManager...")
+            # Use webdriver-manager to handle ChromeDriver
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+            print("✅ Selenium WebDriver initialized successfully.")
+            return driver
+        except Exception as e: # Catching a broader exception initially to see what webdriver-manager might throw
+            print(f"❌ Failed to initialize Selenium WebDriver with ChromeDriverManager: {type(e).__name__} - {e}")
+            return None
+
 
     def extract_search_terms_from_cv(self, cv_analysis: dict) -> Dict[str, List[str]]:
         """Extract dynamic search terms from CV analysis"""
@@ -254,57 +286,153 @@ class DynamicJobScraper:
         return jobs
 
     def scrape_reed_dynamic(self, search_terms: Dict, max_jobs: int) -> List[Dict]:
-        """Scrape Reed.co.uk with dynamic terms"""
-
+        """Scrape Reed.co.uk with dynamic terms using Selenium."""
         jobs = []
+        driver = self._get_selenium_driver()
 
-        for title in search_terms["job_titles"]:
-            if len(jobs) >= max_jobs:
-                break
-            try:
+        if not driver:
+            print("❌ Reed scraper cannot start: Selenium WebDriver not initialized.")
+            return jobs
+
+        try:
+            for title in search_terms["job_titles"]:
+                if len(jobs) >= max_jobs:
+                    break
+
                 encoded_query = quote_plus(title)
                 page = 1
+
                 while len(jobs) < max_jobs:
                     url = f"https://www.reed.co.uk/jobs/{encoded_query}-jobs?pageno={page}"
-
-                    headers = self.session.headers.copy()
-                    headers["User-Agent"] = self._get_random_user_agent()
+                    print(f"Navigating to Reed URL: {url}") # Logging for Selenium
 
                     try:
-                        response = self.session.get(url, headers=headers, timeout=30)
-                        response.raise_for_status()
-                    except requests.exceptions.Timeout:
-                        print(f"❌ Reed request timed out for '{title}' (page {page}). Skipping this query page.")
-                        break
-                    except requests.exceptions.RequestException as e:
-                        print(f"❌ Reed request failed for '{title}': {e}")
-                        break
+                        driver.get(url)
+                        # Wait for job cards to be present
+                        job_card_selector = "div.job-card_jobCard__H6W6R"
+                        WebDriverWait(driver, 20).until(
+                            EC.presence_of_all_elements_located((By.CSS_SELECTOR, job_card_selector))
+                        )
+                        job_card_elements = driver.find_elements(By.CSS_SELECTOR, job_card_selector)
 
-                    soup = BeautifulSoup(response.content, "html.parser")
+                        if not job_card_elements:
+                            print(f"ℹ️ No job cards found on Reed for '{title}' (page {page}) with Selenium selector '{job_card_selector}'.")
+                            break # No jobs on this page for this query
 
-                    job_cards = soup.find_all("article", class_=re.compile(r"\bjob-result\b", re.I))
-                    if not job_cards:
-                        # Fallback for slight variations
-                        job_cards = soup.find_all("div", class_=re.compile(r"\bjob-result\b", re.I))
+                        print(f"Found {len(job_card_elements)} job cards on page {page} for '{title}'.")
 
+                        for card_element in job_card_elements:
+                            if len(jobs) >= max_jobs:
+                                break
 
-                    if not job_cards:
-                        print(f"ℹ️ No job cards found on Reed for '{title}' (page {page}). Structure might have changed or no results.")
-                        break
+                            job_title, job_url, company_name, location, salary, posted_date, description = "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"
 
-                    for card in job_cards:
+                            try:
+                                title_element = card_element.find_element(By.CSS_SELECTOR, "a.job-card_jobTitle__SZq8S")
+                                job_title = title_element.text.strip()
+                                job_url = title_element.get_attribute("href")
+                            except NoSuchElementException:
+                                print(f"Warning: Could not find job title for a card on {url}")
+
+                            try:
+                                company_name = card_element.find_element(By.CSS_SELECTOR, "span.job-card_companyName__vZMqJ").text.strip()
+                            except NoSuchElementException:
+                                pass # Optional
+
+                            try:
+                                location = card_element.find_element(By.CSS_SELECTOR, "li.job-metadata_jobMetadataItem__xDfc9:nth-child(1)").text.strip()
+                            except NoSuchElementException:
+                                pass # Optional
+
+                            try:
+                                salary = card_element.find_element(By.CSS_SELECTOR, "li.job-metadata_jobMetadataItem__xDfc9:nth-child(2)").text.strip()
+                            except NoSuchElementException:
+                                pass # Optional
+
+                            try:
+                                posted_date_raw = card_element.find_element(By.CSS_SELECTOR, "li.job-metadata_jobMetadataItem__xDfc9:nth-child(3)").text.strip()
+                                # Refined posted date extraction
+                                if "posted" in posted_date_raw.lower() or "ago" in posted_date_raw.lower() or re.match(r'\d+\s+\w+\s+ago', posted_date_raw.lower()):
+                                    # Attempt to clean common "Posted X days/weeks ago" or "Posted today/yesterday"
+                                    posted_date = posted_date_raw.replace("Posted ", "").strip()
+                                elif any(kw in posted_date_raw.lower() for kw in ["permanent", "contract", "full-time", "part-time"]):
+                                    # This is likely job type, not posted date, so keep posted_date as N/A
+                                    print(f"Note: Third metadata item for a job on {url} was '{posted_date_raw}', likely job type, not date.")
+                                else:
+                                    # If it's something else, capture it but it might not be a date
+                                    posted_date = posted_date_raw
+                            except NoSuchElementException:
+                                # print(f"Debug: No third metadata item (posted date/job type) found for a card on {url}")
+                                pass # Optional
+
+                            try:
+                                description = card_element.find_element(By.CSS_SELECTOR, "p.job-card_description__jZ_U6").text.strip()
+                            except NoSuchElementException:
+                                # print(f"Debug: No description found for a card on {url}")
+                                pass # Optional
+
+                            job_data = {
+                                "title": job_title,
+                                "company": company_name,
+                                "location": location,
+                                "salary": salary,
+                                "description": description,
+                                "url": job_url,
+                                "posted_date": posted_date,
+                                "source": "Reed.co.uk (Selenium)",
+                                "search_term": title,
+                            }
+                            jobs.append(job_data)
+
                         if len(jobs) >= max_jobs:
+                            break # Max jobs reached
+
+                        # Pagination
+                        try:
+                            # Wait for the next page button to be clickable
+                            next_page_selector = 'a.pagination_link__FG9TT[rel="next"]'
+                            WebDriverWait(driver, 10).until(
+                                EC.element_to_be_clickable((By.CSS_SELECTOR, next_page_selector))
+                            )
+                            next_page_button = driver.find_element(By.CSS_SELECTOR, next_page_selector)
+
+                            # Scroll to button before clicking to ensure it's in view
+                            driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", next_page_button)
+                            time.sleep(0.5) # Brief pause after scroll, before click
+
+                            # It's good practice to re-locate the element right before interacting if the DOM might have changed
+                            # or ensure the existing reference is still valid. For a simple click, it's often fine.
+                            next_page_button.click()
+
+                            page += 1
+                            print(f"Navigating to page {page} for '{title}'")
+                            time.sleep(random.uniform(2, 5)) # Wait for next page to load
+                        except TimeoutException:
+                            print(f"Next page button not clickable or not found in time for '{title}'. End of results for this query.")
                             break
-                        job = self._extract_reed_job(card, title)
-                        if job:
-                            jobs.append(job)
+                        except NoSuchElementException:
+                            print(f"No 'Next Page' button found (NoSuchElement) for '{title}'. End of results for this query.")
+                            break # End of pages for this query
+                        except Exception as e_paginate:
+                            print(f"Error clicking 'Next Page' for '{title}': {type(e_paginate).__name__} - {e_paginate}")
+                            break
 
-                    page += 1
-                    time.sleep(random.uniform(2, 5)) # Increased and randomized delay
+                    except TimeoutException:
+                        print(f"❌ Reed page timed out (Selenium) for '{title}' (url: {url}). Skipping this page.")
+                        break
+                    except WebDriverException as e:
+                        print(f"❌ Reed WebDriverException for '{title}' (url: {url}): {e}")
+                        break # Stop trying this query if WebDriver fails fundamentally
 
-            except Exception as e: # Catch any other unexpected errors for this query
-                print(f"⚠️  Reed search failed unexpectedly for '{title}': {e}")
-                continue # Continue to the next title
+                if len(jobs) >= max_jobs: # Check after each title query
+                    break
+
+        except Exception as e:
+            print(f"⚠️ Reed search failed unexpectedly (Selenium): {e}")
+        finally:
+            if driver:
+                print("Quitting Reed Selenium WebDriver.")
+                driver.quit()
 
         return jobs
 
