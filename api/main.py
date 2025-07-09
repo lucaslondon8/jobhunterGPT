@@ -5,8 +5,8 @@ Orchestrates CV analysis, job scraping, and intelligent matching.
 """
 
 import os
-import sys
 import io
+import sys
 import traceback
 import cohere
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
@@ -16,22 +16,29 @@ from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
+# Add project root to Python path for local development
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 # Load environment variables from .env file
 load_dotenv()
 
-# NOTE: The following two lines for modifying sys.path are no longer needed
-# when you install the project as a package (with `pip install .`) but are
-# left here for reference. They don't harm anything if left in.
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
-
-# --- CORRECTED Module Imports ---
-# Use relative imports for a packaged application
-from ..analyzer.cv_analyzer import analyze_cv_for_search
-from ..matcher.match_job import batch_match_jobs
-from ..scraper.dynamic_scraper import DynamicJobScraper
-from . import models, schemas, crud, security
-from .database import engine, get_db
+# --- FIXED Module Imports ---
+# Try relative imports first (for packaged deployment), then absolute imports (for local development)
+try:
+    from ..analyzer.cv_analyzer import analyze_cv_for_search
+    from ..matcher.match_job import batch_match_jobs
+    from ..scraper.dynamic_scraper import DynamicJobScraper
+    from . import models, schemas, crud, security
+    from .database import engine, get_db
+except ImportError:
+    # Fall back to absolute imports for local development
+    from analyzer.cv_analyzer import analyze_cv_for_search
+    from matcher.match_job import batch_match_jobs
+    from scraper.dynamic_scraper import DynamicJobScraper
+    from api import models, schemas, crud, security
+    from api.database import engine, get_db
 
 # --- Document Processing Imports ---
 try:

@@ -1,10 +1,16 @@
 README.md
 pyproject.toml
+setup.py
+analyzer/__init__.py
 analyzer/cv_analyzer.py
 api/__init__.py
+api/crud.py
+api/database.py
 api/main.py
 api/main_backup.py
 api/models.py
+api/schemas.py
+api/security.py
 frontend/node_modules/flatted/python/flatted.py
 frontend/node_modules/shell-quote/print.py
 frontend/src/node_modules/flatted/python/flatted.py
@@ -17,3 +23,4 @@ matcher/__init__.py
 matcher/match_job.py
 scraper/__init__.py
 scraper/dynamic_scraper.py
+venv/bin/jp.py
