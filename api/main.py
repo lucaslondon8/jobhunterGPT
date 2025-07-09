@@ -19,16 +19,19 @@ from fastapi.security import OAuth2PasswordRequestForm
 # Load environment variables from .env file
 load_dotenv()
 
-# Add project root to the Python path
+# NOTE: The following two lines for modifying sys.path are no longer needed
+# when you install the project as a package (with `pip install .`) but are
+# left here for reference. They don't harm anything if left in.
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-# --- Module Imports ---
-from analyzer.cv_analyzer import analyze_cv_for_search
-from matcher.match_job import batch_match_jobs
-from scraper.dynamic_scraper import DynamicJobScraper
-from api import models, schemas, crud, security
-from api.database import engine, get_db
+# --- CORRECTED Module Imports ---
+# Use relative imports for a packaged application
+from ..analyzer.cv_analyzer import analyze_cv_for_search
+from ..matcher.match_job import batch_match_jobs
+from ..scraper.dynamic_scraper import DynamicJobScraper
+from . import models, schemas, crud, security
+from .database import engine, get_db
 
 # --- Document Processing Imports ---
 try:
@@ -45,7 +48,7 @@ except ImportError:
 # Create database tables based on the models
 models.Base.metadata.create_all(bind=engine)
 
-# --- NEW: Initialize Cohere Client ---
+# --- Initialize Cohere Client ---
 cohere_api_key = os.getenv("COHERE_API_KEY")
 if not cohere_api_key:
     print("⚠️ Warning: COHERE_API_KEY not found in .env file. Cover letter generation will fail.")
@@ -69,7 +72,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- (Dependency for getting the current user remains the same) ---
+# --- Dependency for getting the current user ---
 async def get_current_active_user(token: str = Depends(security.oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
     """Dependency to get the current user from a JWT token."""
     credentials_exception = HTTPException(
@@ -90,7 +93,7 @@ async def get_current_active_user(token: str = Depends(security.oauth2_scheme), 
         raise credentials_exception
     return user
 
-# --- (Helper Functions for text extraction remain the same) ---
+# --- Helper Functions for text extraction ---
 def extract_text_from_pdf(content: bytes) -> str:
     if not PDF_AVAILABLE: raise HTTPException(status_code=501, detail="PDF library not installed.")
     try:
@@ -112,7 +115,7 @@ def extract_text_from_docx(content: bytes) -> str:
 async def root():
     return {"message": "JobHuntGPT API is running. Navigate to /docs for API documentation."}
 
-# --- (Authentication endpoints like /register, /token, /me remain the same) ---
+# --- Authentication endpoints ---
 @app.post("/api/users/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
@@ -133,7 +136,7 @@ async def read_users_me(current_user: models.User = Depends(get_current_active_u
     return current_user
 
 
-# --- MODIFIED: /upload-cv endpoint to save full_text ---
+# --- CV upload endpoint ---
 @app.post("/api/upload-cv", response_model=schemas.CVAnalysisResponse)
 async def upload_cv(
     file: UploadFile = File(...),
@@ -173,7 +176,7 @@ async def upload_cv(
         print(f"❌ CV upload error: {e}\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
 
-# --- (The /discover-jobs endpoint remains the same) ---
+# --- Job discovery endpoint ---
 @app.post("/api/discover-jobs")
 async def discover_jobs(max_jobs: int = 50, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_user)):
     """Discovers jobs based on the user's latest CV and saves unique matches."""
@@ -198,7 +201,7 @@ async def discover_jobs(max_jobs: int = 50, db: Session = Depends(get_db), curre
                         location=job_data.get('location'),
                         job_url=job_url,
                         source='Adzuna',
-                        description=job_data.get('description') # --- FIX: This line saves the job description
+                        description=job_data.get('description')
                     )
                     db.add(job_match)
                     existing_urls.add(job_url)
@@ -212,7 +215,7 @@ async def discover_jobs(max_jobs: int = 50, db: Session = Depends(get_db), curre
         raise HTTPException(status_code=500, detail=f"The job discovery process failed: {e}")
 
 
-# --- NEW: Endpoint for Generating Cover Letters ---
+# --- Cover Letter Generation Endpoint ---
 @app.post("/api/jobs/{job_id}/generate-cover-letter", response_model=dict)
 async def generate_cover_letter_endpoint(
     job_id: str,
@@ -227,7 +230,7 @@ async def generate_cover_letter_endpoint(
     job = db.query(models.JobMatch).filter(models.JobMatch.id == job_id, models.JobMatch.user_id == current_user.id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found.")
-    
+
     prompt = f"""
     Based on the following CV and Job Description, write a professional and compelling cover letter.
     The tone should be confident but not arrogant. The letter should highlight the most relevant skills from the CV that match the job description.
@@ -239,7 +242,7 @@ async def generate_cover_letter_endpoint(
     Job Title: {job.title}
     Company: {job.company}
     Description: {job.description}
-    
+
     --- COVER LETTER ---
     """
 
@@ -256,7 +259,7 @@ async def generate_cover_letter_endpoint(
         raise HTTPException(status_code=500, detail=f"Failed to generate cover letter: {str(e)}")
 
 
-# --- (The /jobs/matches endpoint remains the same) ---
+# --- Job matches endpoint ---
 @app.get("/api/jobs/matches", response_model=List[schemas.JobResponse])
 async def get_job_matches(
     limit: int = 100,
