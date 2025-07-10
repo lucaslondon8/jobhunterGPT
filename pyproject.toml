@@ -7,6 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jobhunt-gpt"
 version = "0.1.0"
+dynamic = ["version", "requires-python"]
 
 [tool.setuptools.packages.find]
 # This section tells setuptools to automatically find all your packages 
