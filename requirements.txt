@@ -18,5 +18,5 @@ passlib[bcrypt]==1.7.4
 redis==5.0.1
 celery==5.3.4
 selenium>=4.8.0
-webdriver-manager>=3.8.5 # For automatic chromedriver management
-# Forcing an update
+webdriver-manager>=3.8.5
+playwright>=1.47.0
