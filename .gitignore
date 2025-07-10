@@ -17,3 +17,4 @@ setup.sh
 setup_project.py
 simple-start.sh
 start_jobhunt.py
+venv/
