@@ -1,0 +1,17 @@
+# Ignore documentation and local configuration
+.github
+.vscode
+README.md
+.gitignore
+
+# Ignore local development dependencies and logs
+node_modules
+npm-debug.log
+.env.local
+
+# Ignore test files
+*.test.js
+*.spec.js
+
+# Ignore common system files
+.DS_Store
