@@ -46,7 +46,7 @@ DYNAMIC_SCRAPER_AVAILABLE = False
 print("🔍 Detecting available modules...")
 
 try:
-    import scraper.scrape_and_match as scraper_module
+    from scraper.dynamic_scraper import DynamicJobScraper
     print("✅ Found scraper module")
 except ImportError as e:
     print(f"❌ Could not import scraper: {e}")
