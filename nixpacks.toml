@@ -1,15 +1,21 @@
 # nixpacks.toml
 
 [phases.setup]
-# Ask the Nix package manager to provide Python's package installer (pip).
-# This is the correct way for a Nix environment.
-nixPkgs = ["python312Packages.pip"]
+# Ask the Nix package manager to provide pip, a browser, and other libraries.
+nixPkgs = [
+    "python312Packages.pip",
+    "chromium",
+    "ffmpeg"
+]
 
 [phases.install]
-# Now that pip is guaranteed to be here, this command should work.
-cmds = ["pip install -r requirements.txt"]
+# First install python packages, then tell playwright to find the browser.
+cmds = [
+    "pip install -r requirements.txt",
+    "playwright install --with-deps"
+]
 
 [start]
-# Make sure to change app:app if your file is named main.py (e.g., main:app)
-# or if your Flask/FastAPI variable is named differently.
-cmd = "gunicorn app:app"
+# Tell Railway how to start your web server.
+# IMPORTANT: I see you have api/main.py. Your start command should be:
+cmd = "gunicorn -w 4 -k uvicorn.workers.UvicornWorker api.main:app"
