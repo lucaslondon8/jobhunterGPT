@@ -6,8 +6,8 @@ nixPkgs = ["python312", "chromium"]
 [phases.install]
 cmds = [
     "python3 -m venv /opt/venv",
-    "/opt/venv/bin/pip install -r requirements.txt",
-    "/opt/venv/bin/python -m playwright install --with-deps"
+    # Activate the venv and run all commands in the same shell
+    "source /opt/venv/bin/activate && pip install -r requirements.txt && python -m playwright install --with-deps"
 ]
 
 [start]
