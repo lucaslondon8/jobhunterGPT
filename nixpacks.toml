@@ -1,19 +1,14 @@
 # nixpacks.toml
 
 [phases.setup]
-# Provide the base system packages: Python and a Browser
 nixPkgs = ["python312", "chromium"]
 
 [phases.install]
-# 1. Create a virtual environment in a local folder called /opt/venv
-# 2. Use the pip from that venv to install your packages into it
-# 3. Use the playwright from that venv to install its browsers
 cmds = [
     "python3 -m venv /opt/venv",
     "/opt/venv/bin/pip install -r requirements.txt",
-    "/opt/venv/bin/playwright install --with-deps"
+    "/opt/venv/bin/python -m playwright install --with-deps"
 ]
 
 [start]
-# Run the gunicorn server using the python from your virtual environment
 cmd = "/opt/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker api.main:app"
