@@ -1,7 +1,15 @@
 # nixpacks.toml
 
+[phases.setup]
+# Ask the Nix package manager to provide Python's package installer (pip).
+# This is the correct way for a Nix environment.
+nixPkgs = ["python312Packages.pip"]
+
 [phases.install]
-cmds = ["python3 -m ensurepip --upgrade", "python3 -m pip install --upgrade pip", "pip install -r requirements.txt"]
+# Now that pip is guaranteed to be here, this command should work.
+cmds = ["pip install -r requirements.txt"]
 
 [start]
+# Make sure to change app:app if your file is named main.py (e.g., main:app)
+# or if your Flask/FastAPI variable is named differently.
 cmd = "gunicorn app:app"
