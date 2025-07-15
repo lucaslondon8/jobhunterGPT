@@ -1,0 +1,23 @@
+2025-06-29 22:58:29,418 - __main__ - INFO - 🚀 CV-Adaptive Job Bot initialized
+2025-06-29 22:58:29,419 - __main__ - INFO - ✅ Loaded CV text (1912 characters)
+2025-06-29 22:58:50,011 - __main__ - INFO - 🚀 CV-Adaptive Job Bot initialized
+2025-06-29 22:58:50,012 - __main__ - INFO - 🚀 Starting CV-Adaptive Job Bot pipeline...
+2025-06-29 22:58:50,012 - __main__ - INFO - ✅ Loaded CV text (1912 characters)
+2025-06-29 22:58:50,012 - __main__ - INFO - 🔍 Starting adaptive job discovery...
+2025-06-29 22:59:09,342 - __main__ - INFO - ✅ Loaded 16 jobs from existing scraper
+2025-06-29 22:59:09,342 - __main__ - INFO - 🎯 Matching 16 jobs against CV...
+2025-06-29 22:59:09,343 - __main__ - INFO - ✅ Job matching completed for 16 jobs
+2025-06-29 22:59:09,343 - __main__ - INFO - 📝 Starting cover letter generation for 16 jobs...
+2025-06-29 22:59:13,676 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:17,354 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:20,118 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:22,575 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:25,341 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:28,617 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:32,919 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:35,684 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:39,885 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:42,135 - httpx - INFO - HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2025-06-29 22:59:42,141 - __main__ - INFO - ✅ Cover letter generation complete!
+2025-06-29 22:59:42,154 - __main__ - INFO - ✅ Saved results to /Users/lux/jobhunt-gpt/output/jobs.csv
+2025-06-29 22:59:42,155 - __main__ - INFO - ✅ CV-Adaptive pipeline completed successfully

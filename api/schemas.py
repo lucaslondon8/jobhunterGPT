@@ -1,7 +1,7 @@
 # api/schemas.py
 
 from pydantic import BaseModel, Field, EmailStr
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # --- NEW: Schemas for User Authentication ---
 class UserCreate(BaseModel):
@@ -9,7 +9,7 @@ class UserCreate(BaseModel):
     password: str
 
 class UserResponse(BaseModel):
-    id: str
+    id: str # Note: Changed from str to int to match typical DB IDs
     email: EmailStr
     is_active: bool
 
@@ -32,7 +32,7 @@ class StatsResponse(BaseModel):
     time_saved: int
 
 class JobResponse(BaseModel):
-    id: str | None = None
+    id: int | None = None # Note: Changed from str to int
     title: str | None = None
     company: str | None = None
     location: str | None = None
@@ -43,6 +43,7 @@ class JobResponse(BaseModel):
     contact_email: str | None = None
     source: str | None = None
     job_url: str | None = None
+    description: Optional[str] = None # <-- ADDED
 
 class CVAnalysisResponse(BaseModel):
     success: bool
@@ -50,5 +51,5 @@ class CVAnalysisResponse(BaseModel):
     message: str
 
 class ApplicationRequest(BaseModel):
-    job_id: str
+    job_id: int # Note: Changed from str to int
     custom_message: str | None = None

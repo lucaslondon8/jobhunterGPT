@@ -11,12 +11,13 @@ import traceback
 import cohere
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
+from typing import List, Optional
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
-# Add project root to Python path for local development
+# Add project root to Python path
+# This helps ensure that imports work consistently
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
@@ -24,21 +25,14 @@ if project_root not in sys.path:
 # Load environment variables from .env file
 load_dotenv()
 
-# --- FIXED Module Imports ---
-# Try relative imports first (for packaged deployment), then absolute imports (for local development)
-try:
-    from ..analyzer.cv_analyzer import analyze_cv_for_search
-    from ..matcher.match_job import batch_match_jobs
-    from ..scraper.dynamic_scraper import DynamicJobScraper
-    from . import models, schemas, crud, security
-    from .database import engine, get_db
-except ImportError:
-    # Fall back to absolute imports for local development
-    from analyzer.cv_analyzer import analyze_cv_for_search
-    from matcher.match_job import batch_match_jobs
-    from scraper.dynamic_scraper import DynamicJobScraper
-    from api import models, schemas, crud, security
-    from api.database import engine, get_db
+# --- Corrected Module Imports ---
+# This simplified block uses absolute imports from the project root,
+# which works correctly in the Fly.io deployment environment.
+from analyzer.cv_analyzer import analyze_cv_for_search
+from matcher.match_job import batch_match_jobs
+from scraper.dynamic_scraper import DynamicJobScraper
+from api import models, schemas, crud, security
+from api.database import engine, get_db
 
 # --- Document Processing Imports ---
 try:
@@ -52,7 +46,6 @@ try:
 except ImportError:
     DOCX_AVAILABLE = False
 
-# Create database tables based on the models
 models.Base.metadata.create_all(bind=engine)
 
 # --- Initialize Cohere Client ---
@@ -60,8 +53,6 @@ cohere_api_key = os.getenv("COHERE_API_KEY")
 if not cohere_api_key:
     print("⚠️ Warning: COHERE_API_KEY not found in .env file. Cover letter generation will fail.")
 co = cohere.Client(cohere_api_key)
-# ------------------------------------
-
 
 # --- FastAPI App Initialization ---
 app = FastAPI(
@@ -70,10 +61,11 @@ app = FastAPI(
     description="Multi-user API with JWT authentication and AI cover letter generation."
 )
 
-# Add CORS middleware
+# Allow all origins for simplicity in development.
+# For production, you might want to restrict this to your Netlify URL.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -81,7 +73,6 @@ app.add_middleware(
 
 # --- Dependency for getting the current user ---
 async def get_current_active_user(token: str = Depends(security.oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
-    """Dependency to get the current user from a JWT token."""
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",
@@ -92,7 +83,7 @@ async def get_current_active_user(token: str = Depends(security.oauth2_scheme), 
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-    except security.JWTError:
+    except Exception: # Catches JWTError and others
         raise credentials_exception
 
     user = crud.get_user_by_email(db, email=email)
@@ -122,7 +113,6 @@ def extract_text_from_docx(content: bytes) -> str:
 async def root():
     return {"message": "JobHuntGPT API is running. Navigate to /docs for API documentation."}
 
-# --- Authentication endpoints ---
 @app.post("/api/users/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
@@ -142,19 +132,15 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 async def read_users_me(current_user: models.User = Depends(get_current_active_user)):
     return current_user
 
-
-# --- CV upload endpoint ---
 @app.post("/api/upload-cv", response_model=schemas.CVAnalysisResponse)
 async def upload_cv(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
 ):
-    """Handles CV upload, analysis, saves full text, and clears old job matches."""
     content = await file.read()
     filename = file.filename.lower()
     cv_text = ""
-
     try:
         if filename.endswith('.pdf'):
             cv_text = extract_text_from_pdf(content)
@@ -162,10 +148,10 @@ async def upload_cv(
             cv_text = extract_text_from_docx(content)
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type. Please use PDF, DOCX.")
-
+        
         analysis = analyze_cv_for_search(cv_text)
         db.query(models.JobMatch).filter(models.JobMatch.user_id == current_user.id).delete()
-
+        
         cv_profile = models.CVProfile(
             user_id=current_user.id,
             experience_level=analysis.get('experience_level'),
@@ -176,26 +162,25 @@ async def upload_cv(
         )
         db.add(cv_profile)
         db.commit()
-
         return schemas.CVAnalysisResponse(success=True, analysis=analysis, message="CV analyzed and profile saved.")
     except Exception as e:
         db.rollback()
         print(f"❌ CV upload error: {e}\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
 
-# --- Job discovery endpoint ---
 @app.post("/api/discover-jobs")
 async def discover_jobs(max_jobs: int = 50, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_user)):
-    """Discovers jobs based on the user's latest CV and saves unique matches."""
     latest_cv = db.query(models.CVProfile).filter(models.CVProfile.user_id == current_user.id).order_by(models.CVProfile.created_at.desc()).first()
     if not latest_cv:
         raise HTTPException(status_code=400, detail="A CV must be uploaded before discovering jobs.")
     try:
         keywords = latest_cv.search_keywords
         existing_urls = {job.job_url for job in db.query(models.JobMatch.job_url).filter(models.JobMatch.user_id == current_user.id).all()}
+        
         scraper = DynamicJobScraper()
         scraped_jobs = await scraper.scrape_jobs_with_keywords(keywords, max_jobs=max_jobs)
         new_jobs_added = 0
+        
         if scraped_jobs:
             for job_data in scraped_jobs:
                 job_url = job_data.get('url')
@@ -221,15 +206,12 @@ async def discover_jobs(max_jobs: int = 50, db: Session = Depends(get_db), curre
         print(f"❌ Job discovery error: {e}\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"The job discovery process failed: {e}")
 
-
-# --- Cover Letter Generation Endpoint ---
 @app.post("/api/jobs/{job_id}/generate-cover-letter", response_model=dict)
 async def generate_cover_letter_endpoint(
-    job_id: str,
+    job_id: int,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
 ):
-    """Generates a cover letter for a specific job using the user's CV and Cohere."""
     latest_cv = db.query(models.CVProfile).filter(models.CVProfile.user_id == current_user.id).order_by(models.CVProfile.created_at.desc()).first()
     if not latest_cv or not latest_cv.full_text:
         raise HTTPException(status_code=400, detail="No CV text found. Please upload a CV first.")
@@ -252,7 +234,6 @@ async def generate_cover_letter_endpoint(
 
     --- COVER LETTER ---
     """
-
     try:
         response = co.generate(
             model='command-r-plus',
@@ -265,16 +246,27 @@ async def generate_cover_letter_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate cover letter: {str(e)}")
 
-
-# --- Job matches endpoint ---
 @app.get("/api/jobs/matches", response_model=List[schemas.JobResponse])
 async def get_job_matches(
     limit: int = 100,
+    sort_by: Optional[str] = None,
+    location: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
 ):
     """Retrieves matched jobs for the current user from the database."""
-    matches = db.query(models.JobMatch).filter(models.JobMatch.user_id == current_user.id).order_by(models.JobMatch.discovered_at.desc()).limit(limit).all()
+    query = db.query(models.JobMatch).filter(models.JobMatch.user_id == current_user.id)
+
+    if location:
+        query = query.filter(models.JobMatch.location.ilike(f"%{location}%"))
+
+    if sort_by == 'date_asc':
+        query = query.order_by(models.JobMatch.discovered_at.asc())
+    else:
+        query = query.order_by(models.JobMatch.discovered_at.desc())
+
+    matches = query.limit(limit).all()
+    
     response_jobs = [
         schemas.JobResponse(
             id=job.id,
@@ -284,7 +276,8 @@ async def get_job_matches(
             salary=job.salary,
             score=job.match_score,
             job_url=job.job_url,
-            source=job.source
+            source=job.source,
+            description=job.description
         ) for job in matches
     ]
     return response_jobs

@@ -271,6 +271,11 @@ async def health_check():
 
 if __name__ == "__main__":
     print("🚀 Starting JobHuntGPT API server...")
-    print("📍 API will be available at: http://localhost:8000")
-    print("📚 API docs will be available at: http://localhost:8000/docs")
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    # Get port from environment variable (Fly.io sets this) or default to 8080
+    port = int(os.environ.get("PORT", 8080))
+    print(f"📍 API will be available at: http://0.0.0.0:{port}")
+    print(f"📚 API docs will be available at: http://0.0.0.0:{port}/docs")
+    print(f"🔧 Health check at: http://0.0.0.0:{port}/health")
+    
+    # For production deployment, use host="0.0.0.0" and disable reload
+    uvicorn.run(app, host="0.0.0.0", port=port, reload=False)

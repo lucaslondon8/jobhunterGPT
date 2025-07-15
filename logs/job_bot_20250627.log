@@ -1,0 +1,18 @@
+2025-06-27 22:15:17,197 - __main__ - INFO - 🚀 Enhanced Web3 Job Bot initialized
+2025-06-27 22:15:17,197 - __main__ - INFO - 🚀 Starting enhanced Web3 Job Bot pipeline...
+2025-06-27 22:15:17,198 - __main__ - INFO - ✅ Loaded CV text (0 characters)
+2025-06-27 22:15:17,198 - __main__ - ERROR - No CV text available
+2025-06-27 22:20:20,335 - __main__ - INFO - 🚀 Enhanced Web3 Job Bot initialized
+2025-06-27 22:20:20,336 - __main__ - INFO - 🚀 Starting enhanced Web3 Job Bot pipeline...
+2025-06-27 22:20:20,336 - __main__ - INFO - ✅ Loaded CV text (1912 characters)
+2025-06-27 22:20:20,336 - __main__ - INFO - 🔍 Starting job scraping...
+2025-06-27 22:20:20,336 - __main__ - INFO - Using scraper main function
+2025-06-27 22:20:39,565 - __main__ - INFO - ✅ Loaded 18 jobs from scraper
+2025-06-27 22:20:39,566 - __main__ - INFO - 🎯 Matching 18 jobs against CV...
+2025-06-27 22:20:39,589 - __main__ - INFO - ✅ Enhanced matching applied to 18 jobs
+2025-06-27 22:20:39,589 - __main__ - INFO - 📝 Starting smart cover letter generation for 18 jobs...
+2025-06-27 22:20:39,590 - __main__ - ERROR - Cover letter generation failed: argument of type 'float' is not iterable
+2025-06-27 22:20:39,592 - __main__ - INFO - ✅ Saved results to /Users/lux/jobsearchBotV1/output/jobs.csv
+2025-06-27 22:20:39,592 - __main__ - INFO - ✅ Enhanced pipeline completed successfully
+2025-06-27 22:24:15,879 - main - INFO - 🚀 Enhanced Web3 Job Bot initialized
+2025-06-27 22:24:15,881 - main - INFO - ✅ Loaded CV text (1912 characters)

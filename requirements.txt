@@ -13,6 +13,22 @@ scikit-learn>=1.1.0
 fastapi>=0.95.0
 uvicorn>=0.20.0
 pydantic>=2.0.0
+email-validator
+python-multipart
+
+# Database Dependencies
+SQLAlchemy
+psycopg2-binary
+
+# Security Dependencies
+passlib
+bcrypt==3.2.0
+python-jose[cryptography]
+
+# Document Processing
+PyPDF2
+python-docx
 
 # Optional Dependencies
 selenium>=4.8.0
+playwright==1.40.0

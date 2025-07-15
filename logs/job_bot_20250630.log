@@ -1,0 +1,6 @@
+2025-06-30 17:34:09,109 - main - INFO - 🚀 CV-Adaptive Job Bot initialized
+2025-06-30 17:34:09,113 - fastapi - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
