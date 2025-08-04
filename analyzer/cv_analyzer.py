@@ -49,6 +49,7 @@ def analyze_cv_for_search(cv_text: str) -> Dict:
         'industry_category': 'general',
         'specific_roles': [],
         'technical_skills': [],
+        'soft_skills': [],
         'experience_level': 'mid',
         'location_preferences': [],
         'search_keywords': []
@@ -56,10 +57,12 @@ def analyze_cv_for_search(cv_text: str) -> Dict:
     
     # Define keywords to detect industry from the CV
     industry_patterns = {
-        'tech_cloud_security': ['devops', 'devsecops', 'cloud', 'aws', 'azure', 'kubernetes', 'cybersecurity', 'terraform'],
+        'tech_cloud_security': ['devops', 'devsecops', 'cloud', 'aws', 'azure', 'gcp', 'kubernetes', 'cybersecurity', 'terraform', 'docker'],
+        'web3_blockchain': ['web3', 'blockchain', 'defi', 'ethereum', 'solidity', 'smart contract', 'nft', 'dao'],
         'recruitment_hr': ['recruitment', 'talent acquisition', 'sourcing', 'ats', 'recruiter', 'hiring'],
-        'finance_accounting': ['fund accountant', 'financial analyst', 'accounting', 'audit', 'compliance', 'finance'],
+        'finance_accounting': ['fund accountant', 'financial analyst', 'accounting', 'audit', 'compliance', 'finance', 'trading', 'fintech'],
         'sales_business_development': ['sales', 'business development', 'crm', 'pipeline', 'revenue', 'clients'],
+        'design_creative': ['designer', 'ui/ux', 'figma', 'sketch', 'adobe xd', 'creative'],
         # Add more industry patterns as needed
     }
 
@@ -71,9 +74,14 @@ def analyze_cv_for_search(cv_text: str) -> Dict:
     if any(score > 0 for score in industry_scores.values()):
         analysis['industry_category'] = max(industry_scores, key=industry_scores.get)
 
-    # A simplified but effective way to find roles and skills
-    analysis['specific_roles'] = list(set(re.findall(r'\b(engineer|developer|analyst|manager|recruiter|accountant|specialist|coordinator)\b', cv_lower)))
-    analysis['technical_skills'] = list(set(re.findall(r'\b(python|javascript|aws|azure|sql|salesforce|excel|react|java)\b', cv_lower)))
+    # Expanded regex for roles and skills
+    roles_pattern = r'\b(software engineer|engineer|developer|analyst|manager|recruiter|accountant|specialist|coordinator|consultant|architect|designer|producer|strategist|administrator|associate|officer|executive|head|director|lead)\b'
+    tech_skills_pattern = r'\b(python|javascript|java|c\+\+|c\#|go|rust|solidity|vyper|ruby|php|swift|kotlin|typescript|react|angular|vue|node\.js|django|flask|fastapi|aws|azure|gcp|docker|kubernetes|linux|sql|mongodb|postgresql|mysql|redis|git|jira|scrum|agile|ci/cd|terraform|ethers\.js|web3\.js|hardhat|truffle|foundry|salesforce|excel)\b'
+    soft_skills_pattern = r'\b(communication|teamwork|problem-solving|leadership|management|collaboration|adaptability|creativity)\b'
+
+    analysis['specific_roles'] = list(set(re.findall(roles_pattern, cv_lower)))
+    analysis['technical_skills'] = list(set(re.findall(tech_skills_pattern, cv_lower)))
+    analysis['soft_skills'] = list(set(re.findall(soft_skills_pattern, cv_lower)))
 
     # Determine experience level
     if any(word in cv_lower for word in ['senior', 'lead', 'principal', 'head of', 'director', 'manager']):

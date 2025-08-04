@@ -30,13 +30,13 @@ except ImportError:
 
 # Import CV analyzer
 try:
-    from cv_analyzer import analyze_any_cv
+    from analyzer.cv_analyzer import analyze_cv_for_search
     CV_ANALYZER_AVAILABLE = True
     print("✅ CV Analyzer imported - Universal job discovery enabled")
 except ImportError:
     print("⚠️  CV Analyzer not found - Using Web3-specific mode")
     CV_ANALYZER_AVAILABLE = False
-    analyze_any_cv = None
+    analyze_cv_for_search = None
 
 # Import your existing modules (fallback)
 scraper_module = None
@@ -126,25 +126,18 @@ class CVAdaptiveJobBot:
             self.logger.info(f"✅ Loaded CV text ({len(self.cv_text)} characters)")
             
             # Analyze CV if analyzer is available
-            if CV_ANALYZER_AVAILABLE and analyze_any_cv:
+            if CV_ANALYZER_AVAILABLE and analyze_cv_for_search:
                 print("\n🧠 ANALYZING YOUR CV...")
                 print("=" * 50)
                 
-                self.cv_profile = analyze_any_cv(self.cv_text)
+                self.cv_profile = analyze_cv_for_search(self.cv_text)
                 
                 # Display analysis results
                 print(f"📊 CV ANALYSIS RESULTS:")
                 print(f"   • Experience Level: {self.cv_profile.get('experience_level', 'Unknown')}")
-                print(f"   • Primary Roles: {', '.join(self.cv_profile.get('primary_roles', []))}")
-                print(f"   • Top Skills: {', '.join([skill for skill, _ in self.cv_profile.get('top_skills', [])[:8]])}")
-                print(f"   • Target Industries: {', '.join(self.cv_profile.get('target_industries', []))}")
-                print(f"   • CV Strength: {self.cv_profile.get('cv_strength', 'Unknown')}")
-                
-                # Show job search strategy
-                strategy = self.cv_profile.get('job_search_strategy', {})
-                if strategy:
-                    print(f"   • Recommended Job Sites: {', '.join(strategy.get('primary_job_sites', [])[:5])}")
-                    print(f"   • Search Keywords: {', '.join(strategy.get('search_terms', [])[:10])}")
+                print(f"   • Primary Roles: {', '.join(self.cv_profile.get('specific_roles', []))}")
+                print(f"   • Top Skills: {', '.join(self.cv_profile.get('technical_skills', [])[:8])}")
+                print(f"   • Target Industries: {self.cv_profile.get('industry_category', 'general')}")
                 
                 self.logger.info("✅ CV analysis completed")
                 return True
@@ -165,21 +158,16 @@ class CVAdaptiveJobBot:
         # Simple analysis
         profile = {
             'experience_level': 'mid',
-            'primary_roles': ['developer'],
-            'top_skills': [('python', 1.0), ('javascript', 1.0)],
-            'target_industries': ['tech'],
-            'cv_strength': 'Good',
-            'job_search_strategy': {
-                'primary_job_sites': ['Indeed', 'LinkedIn', 'Remote OK'],
-                'search_terms': ['developer', 'engineer', 'python']
-            }
+            'specific_roles': ['developer'],
+            'technical_skills': ['python', 'javascript'],
+            'industry_category': 'tech',
         }
         
         # Simple role detection
         if any(word in cv_lower for word in ['web3', 'blockchain', 'defi', 'solidity']):
-            profile['target_industries'] = ['blockchain', 'tech']
-            profile['primary_roles'] = ['developer']
-            profile['top_skills'] = [('web3', 2.0), ('blockchain', 2.0), ('solidity', 2.0)]
+            profile['industry_category'] = 'web3_blockchain'
+            profile['specific_roles'] = ['developer']
+            profile['technical_skills'] = ['web3', 'blockchain', 'solidity']
         
         return profile
     
@@ -229,16 +217,11 @@ class CVAdaptiveJobBot:
         self.logger.info(f"🎯 Matching {len(jobs_data)} jobs against CV...")
         
         try:
-            # If we have CV profile, use adaptive matching
-            if self.cv_profile:
-                matched_jobs = self._adaptive_job_matching(jobs_data)
+            if matcher_module and hasattr(matcher_module, 'batch_match_jobs'):
+                matched_jobs = matcher_module.batch_match_jobs(self.cv_text, jobs_data, self.cv_profile)
             else:
-                # Fallback to existing matcher
-                if matcher_module and hasattr(matcher_module, 'batch_match_jobs'):
-                    matched_jobs = matcher_module.batch_match_jobs(self.cv_text, jobs_data)
-                else:
-                    # Basic matching
-                    matched_jobs = self._basic_job_matching(jobs_data)
+                # Basic matching
+                matched_jobs = self._basic_job_matching(jobs_data)
             
             self.stats['matched_jobs'] = len(matched_jobs)
             self.logger.info(f"✅ Job matching completed for {len(matched_jobs)} jobs")
@@ -248,54 +231,6 @@ class CVAdaptiveJobBot:
             self.logger.error(f"Job matching failed: {e}")
             self.stats['errors'].append(f"Job matching failed: {e}")
             return jobs_data
-    
-    def _adaptive_job_matching(self, jobs_data):
-        """CV-adaptive job matching using profile analysis"""
-        
-        print("\n🧠 ADAPTIVE JOB MATCHING")
-        print("=" * 30)
-        
-        # Get CV skills and preferences
-        top_skills = {skill: weight for skill, weight in self.cv_profile.get('top_skills', [])}
-        target_industries = self.cv_profile.get('target_industries', [])
-        experience_level = self.cv_profile.get('experience_level', 'mid')
-        
-        for job in jobs_data:
-            # Calculate adaptive match score
-            job_text = f"{job.get('title', '')} {job.get('description', '')} {job.get('company', '')}".lower()
-            
-            score = 0.0
-            
-            # Skill matching (60% weight)
-            for skill, weight in top_skills.items():
-                if skill.lower() in job_text:
-                    score += weight * 0.6
-            
-            # Industry matching (25% weight)
-            for industry in target_industries:
-                if industry.lower() in job_text:
-                    score += 0.25
-            
-            # Experience level matching (15% weight)
-            if experience_level in job_text:
-                score += 0.15
-            
-            # Normalize score to 0-1 range
-            job['match_score'] = min(1.0, score / 5.0)
-            job['combined_score'] = job['match_score']
-            job['score'] = job['match_score']
-            
-            # Add match reasoning
-            job['match_reason'] = f"CV-adaptive match based on {experience_level} level and {len(top_skills)} skills"
-        
-        # Sort by match score
-        jobs_data.sort(key=lambda x: x.get('match_score', 0), reverse=True)
-        
-        print(f"✅ Adaptive matching complete")
-        print(f"   • Top match: {jobs_data[0]['title']} ({jobs_data[0]['match_score']:.3f})")
-        print(f"   • Average score: {sum(job['match_score'] for job in jobs_data) / len(jobs_data):.3f}")
-        
-        return jobs_data
     
     def _basic_job_matching(self, jobs_data):
         """Basic job matching fallback"""
@@ -372,10 +307,9 @@ class CVAdaptiveJobBot:
         print(f"📊 CV ANALYSIS:")
         if self.cv_profile:
             print(f"   • Experience Level: {self.cv_profile.get('experience_level', 'Unknown')}")
-            print(f"   • Primary Roles: {', '.join(self.cv_profile.get('primary_roles', []))}")
-            print(f"   • Top Skills: {', '.join([skill for skill, _ in self.cv_profile.get('top_skills', [])[:5]])}")
-            print(f"   • Target Industries: {', '.join(self.cv_profile.get('target_industries', []))}")
-            print(f"   • CV Strength: {self.cv_profile.get('cv_strength', 'Unknown')}")
+            print(f"   • Primary Roles: {', '.join(self.cv_profile.get('specific_roles', []))}")
+            print(f"   • Top Skills: {', '.join(self.cv_profile.get('technical_skills', [])[:5])}")
+            print(f"   • Target Industries: {self.cv_profile.get('industry_category', 'general')}")
         
         print(f"\n📊 JOB DISCOVERY:")
         print(f"   • Jobs discovered: {self.stats['scraped_jobs']}")
@@ -390,13 +324,16 @@ class CVAdaptiveJobBot:
             print(f"\n🏆 TOP 5 ADAPTIVE MATCHES:")
             for i, job in enumerate(sorted_jobs[:5]):
                 score = job.get('match_score', 0)
+                match_analysis = job.get('match_analysis', {})
+                strength = match_analysis.get('match_strength', 'N/A')
                 print(f"   {i+1}. {job['title'][:50]}")
-                print(f"      {job['company']} | Score: {score:.3f} | {job.get('match_reason', 'Standard match')}")
+                print(f"      {job['company']} | Score: {score:.3f} | {strength}")
         
         print(f"\n🚀 NEXT STEPS:")
         print(f"   • Review adaptive results: {config.output_csv}")
-        print(f"   • Your CV was analyzed for: {', '.join(self.cv_profile.get('primary_roles', []))} roles")
-        print(f"   • Jobs targeted your: {', '.join(self.cv_profile.get('target_industries', []))} expertise")
+        if self.cv_profile:
+            print(f"   • Your CV was analyzed for: {', '.join(self.cv_profile.get('specific_roles', []))} roles")
+            print(f"   • Jobs targeted your: {self.cv_profile.get('industry_category', 'general')} expertise")
         
         print("="*80)
     
