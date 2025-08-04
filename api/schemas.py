@@ -2,18 +2,21 @@
 
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Dict, Any, Optional
+import uuid
 
-# --- NEW: Schemas for User Authentication ---
+# --- Schemas for User Authentication ---
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
 class UserResponse(BaseModel):
-    id: str # Note: Changed from str to int to match typical DB IDs
+    # The user ID is a UUID, so it should be a string.
+    id: str
     email: EmailStr
     is_active: bool
 
     class Config:
+        # Renamed from orm_mode for Pydantic v2
         from_attributes = True
 
 class Token(BaseModel):
@@ -32,7 +35,8 @@ class StatsResponse(BaseModel):
     time_saved: int
 
 class JobResponse(BaseModel):
-    id: int | None = None # Note: Changed from str to int
+    # FIX: The job ID from the database is a UUID string, not an integer.
+    id: str | None = None
     title: str | None = None
     company: str | None = None
     location: str | None = None
@@ -43,7 +47,7 @@ class JobResponse(BaseModel):
     contact_email: str | None = None
     source: str | None = None
     job_url: str | None = None
-    description: Optional[str] = None # <-- ADDED
+    description: Optional[str] = None
 
 class CVAnalysisResponse(BaseModel):
     success: bool
@@ -51,5 +55,6 @@ class CVAnalysisResponse(BaseModel):
     message: str
 
 class ApplicationRequest(BaseModel):
-    job_id: int # Note: Changed from str to int
+    # FIX: The job_id needs to be a string to match the JobResponse ID.
+    job_id: str
     custom_message: str | None = None
